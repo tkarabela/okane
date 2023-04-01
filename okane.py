@@ -18,10 +18,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import argparse
+import sys
 from lxml import etree
 from lxml.etree import _Element
 from io import BytesIO
-from dataclasses import dataclass
+from pydantic import BaseModel
 from enum import Enum
 import datetime
 from decimal import Decimal
@@ -32,15 +34,13 @@ class CreditOrDebit(str, Enum):
     DBIT = "DBIT"
 
 
-@dataclass
-class Balance:
+class Balance(BaseModel):
     amount: Decimal
     currency: str
     date: datetime.date
 
 
-@dataclass
-class Transaction:
+class Transaction(BaseModel):
     ref: str
     amount: Decimal
     currency: str
@@ -64,8 +64,7 @@ class Transaction:
             return remote_info or additional_transaction_info
 
 
-@dataclass
-class BankToCustomerStatement:
+class BankToCustomerStatement(BaseModel):
     statement_id: str
     created_time: datetime.datetime
     from_time: datetime.datetime
@@ -182,3 +181,19 @@ def parse_transaction(ntry: _Element) -> Transaction:
         related_account=related_account,
         related_account_bank=related_account_bank,
     )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("input_file", metavar="statement.xml")
+    args = parser.parse_args()
+    input_file = args.input_file
+
+    statement = BankToCustomerStatement.from_file(input_file)
+    print(statement.json(indent=4, ensure_ascii=False))
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
