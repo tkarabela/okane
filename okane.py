@@ -22,12 +22,12 @@ from lxml import etree
 from lxml.etree import _Element
 from io import BytesIO
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
 import datetime
 from decimal import Decimal
 
 
-class CreditOrDebit(StrEnum):
+class CreditOrDebit(str, Enum):
     CRDT = "CRDT"
     DBIT = "DBIT"
 
