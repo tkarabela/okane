@@ -18,6 +18,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+"""
+Okane
+=====
+
+Python parser for bank statements in camt.053 XML format, in dialect
+used by the Czech Banking Association (ČBA).
+
+"""
+
 import argparse
 import sys
 from lxml import etree
