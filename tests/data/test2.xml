@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02">
+    <BkToCstmrStmt>
+        <GrpHdr>
+            <MsgId>camt.053-2023-03-31-001</MsgId>
+            <CreDtTm>2023-04-01T12:00:00.000+02:00</CreDtTm>
+            <MsgRcpt>
+                <Nm>John Doe</Nm>
+                <PstlAdr>
+                    <StrtNm>Big Street 1</StrtNm>
+                    <PstCd>12345</PstCd>
+                    <TwnNm>Little Town</TwnNm>
+                    <Ctry>CZ</Ctry>
+                </PstlAdr>
+                <Id>
+                    <PrvtId>
+                        <Othr>
+                            <Id>John Doe</Id>
+                        </Othr>
+                    </PrvtId>
+                </Id>
+            </MsgRcpt>
+            <MsgPgntn>
+                <PgNb>1</PgNb>
+                <LastPgInd>true</LastPgInd>
+            </MsgPgntn>
+            <AddtlInf>Měsíční</AddtlInf>
+        </GrpHdr>
+        <Stmt>
+            <Id>XXX-STATEMENT-ID</Id>
+            <ElctrncSeqNb>1</ElctrncSeqNb>
+            <LglSeqNb>1</LglSeqNb>
+            <CreDtTm>2023-04-01T12:00:00.000+02:00</CreDtTm>
+            <FrToDt>
+                <FrDtTm>2023-03-01T00:00:00.000+01:00</FrDtTm>
+                <ToDtTm>2023-03-31T23:59:59.999+02:00</ToDtTm>
+            </FrToDt>
+            <Acct>
+                <Id>
+                    <IBAN>XXX-IBAN</IBAN>
+                </Id>
+                <Tp>
+                    <Cd>CASH</Cd>
+                </Tp>
+                <Ccy>CZK</Ccy>
+                <Nm>John Doe</Nm>
+                <Ownr>
+                    <Nm>John Doe</Nm>
+                    <PstlAdr>
+                        <StrtNm>Big Street 1</StrtNm>
+                        <PstCd>12345</PstCd>
+                        <TwnNm>Little Town</TwnNm>
+                        <Ctry>CZ</Ctry>
+                    </PstlAdr>
+                    <Id>
+                        <PrvtId>
+                            <Othr>
+                                <Id>John Doe</Id>
+                            </Othr>
+                        </PrvtId>
+                    </Id>
+                </Ownr>
+                <Svcr>
+                    <FinInstnId>
+                        <BIC>XXX</BIC>
+                        <Nm>Big Bank</Nm>
+                        <PstlAdr>
+                            <StrtNm>Little Street 1</StrtNm>
+                            <TwnNm>54321 Big Town</TwnNm>
+                            <Ctry>CZ</Ctry>
+                        </PstlAdr>
+                        <Othr>
+                            <Id>1234</Id>
+                        </Othr>
+                    </FinInstnId>
+                </Svcr>
+            </Acct>
+            <Intrst>
+                <Rate>
+                    <Tp>
+                        <Pctg>0.00</Pctg>
+                    </Tp>
+                </Rate>
+            </Intrst>
+            <Bal>
+                <Tp>
+                    <CdOrPrtry>
+                        <Cd>PRCD</Cd>
+                    </CdOrPrtry>
+                </Tp>
+                <Amt Ccy="CZK">1000.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <Dt>
+                    <Dt>2023-03-01</Dt>
+                </Dt>
+            </Bal>
+            <Bal>
+                <Tp>
+                    <CdOrPrtry>
+                        <Cd>CLBD</Cd>
+                    </CdOrPrtry>
+                </Tp>
+                <Amt Ccy="CZK">2000.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <Dt>
+                    <Dt>2023-03-31</Dt>
+                </Dt>
+            </Bal>
+            <TxsSummry />
+            <Ntry>
+                <NtryRef>XXX-REF-1</NtryRef>
+                <Amt Ccy="CZK">100.00</Amt>
+                <CdtDbtInd>DBIT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-01</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-03-01</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>Czech Banking Association</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <MsgId>XXX</MsgId>
+                            <EndToEndId>XXX</EndToEndId>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>Czech Banking Association</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RmtInf>
+                            <Ustrd>Nákup dne 27.2.2023, částka 100.00 CZK
+                            </Ustrd>
+                        </RmtInf>
+                        <AddtlTxInf>Nákup dne 27.2.2023, částka 100.00 CZK
+                        </AddtlTxInf>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
+            <Ntry>
+                <NtryRef>XXX-REF-2</NtryRef>
+                <Amt Ccy="CZK">200.00</Amt>
+                <CdtDbtInd>DBIT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-02</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-03-02</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>Czech Banking Association</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <MsgId>XXX</MsgId>
+                            <EndToEndId>XXX</EndToEndId>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>Czech Banking Association</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RltdPties>
+                            <CdtrAcct>
+                                <Id>
+                                    <Othr>
+                                        <Id>XXX-OTHER-ACC</Id>
+                                    </Othr>
+                                </Id>
+                            </CdtrAcct>
+                        </RltdPties>
+                        <RltdAgts>
+                            <CdtrAgt>
+                                <FinInstnId>
+                                    <Othr>
+                                        <Id>XXX-OTHER-BANK</Id>
+                                    </Othr>
+                                </FinInstnId>
+                            </CdtrAgt>
+                        </RltdAgts>
+                        <AddtlTxInf>transaction note</AddtlTxInf>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
+            <Ntry>
+                <NtryRef>XXX-REF-3</NtryRef>
+                <Amt Ccy="CZK">1000.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-07</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-03-07</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>Czech Banking Association</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <MsgId>XXX</MsgId>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>Czech Banking Association</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RltdPties>
+                            <DbtrAcct>
+                                <Id>
+                                    <Othr>
+                                        <Id>XXX-OTHER-ACC</Id>
+                                    </Othr>
+                                </Id>
+                            </DbtrAcct>
+                        </RltdPties>
+                        <RltdAgts>
+                            <DbtrAgt>
+                                <FinInstnId>
+                                    <Othr>
+                                        <Id>XXX-OTHER-BANK</Id>
+                                    </Othr>
+                                </FinInstnId>
+                            </DbtrAgt>
+                        </RltdAgts>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
+            <Ntry>
+                <NtryRef>XXX-REF-4</NtryRef>
+                <Amt Ccy="CZK">400.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-08</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-03-08</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>Czech Banking Association</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <MsgId>XXX</MsgId>
+                            <EndToEndId>XXX</EndToEndId>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>Czech Banking Association</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RltdPties>
+                            <DbtrAcct>
+                                <Id>
+                                    <Othr>
+                                        <Id>XXX-OTHER-ACC</Id>
+                                    </Othr>
+                                </Id>
+                            </DbtrAcct>
+                        </RltdPties>
+                        <RltdAgts>
+                            <DbtrAgt>
+                                <FinInstnId>
+                                    <Othr>
+                                        <Id>XXX-OTHER-BANK</Id>
+                                    </Othr>
+                                </FinInstnId>
+                            </DbtrAgt>
+                        </RltdAgts>
+                        <RmtInf>
+                            <Ustrd>description</Ustrd>
+                        </RmtInf>
+                        <AddtlTxInf>RECIPIENT NAME</AddtlTxInf>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
+            <Ntry>
+                <NtryRef>XXX-REF-5</NtryRef>
+                <Amt Ccy="CZK">100.00</Amt>
+                <CdtDbtInd>DBIT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-31</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-03-31</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>Czech Banking Association</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <MsgId>XXX</MsgId>
+                            <EndToEndId>XXX</EndToEndId>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>Czech Banking Association</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RmtInf>
+                            <Ustrd>transaction description</Ustrd>
+                        </RmtInf>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
+        </Stmt>
+    </BkToCstmrStmt>
+</Document>

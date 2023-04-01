@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02">
+    <BkToCstmrStmt>
+        <GrpHdr>
+            <MsgId>camt.053-2023-04-01-001</MsgId>
+            <CreDtTm>2023-04-01T12:00:00.000+02:00</CreDtTm>
+            <MsgRcpt>
+                <Nm>John Doe</Nm>
+                <PstlAdr>
+                    <StrtNm>Big Street</StrtNm>
+                    <BldgNb>1</BldgNb>
+                    <PstCd>12345</PstCd>
+                    <TwnNm>Little Town</TwnNm>
+                    <Ctry>CZ</Ctry>
+                </PstlAdr>
+                <Id>
+                    <PrvtId>
+                        <Othr>
+                            <Id>John Doe</Id>
+                        </Othr>
+                    </PrvtId>
+                </Id>
+            </MsgRcpt>
+            <MsgPgntn>
+                <PgNb>1</PgNb>
+                <LastPgInd>true</LastPgInd>
+            </MsgPgntn>
+            <AddtlInf>Měsíčně</AddtlInf>
+        </GrpHdr>
+        <Stmt>
+            <Id>XXX-STATEMENT-ID</Id>
+            <ElctrncSeqNb>1</ElctrncSeqNb>
+            <LglSeqNb>1</LglSeqNb>
+            <CreDtTm>2023-04-01T12:00:00.000+02:00</CreDtTm>
+            <FrToDt>
+                <FrDtTm>2023-03-01T00:00:00.000+01:00</FrDtTm>
+                <ToDtTm>2023-03-31T00:00:00.000+02:00</ToDtTm>
+            </FrToDt>
+            <Acct>
+                <Id>
+                    <IBAN>XXX-IBAN</IBAN>
+                </Id>
+                <Tp>
+                    <Cd>CASH</Cd>
+                </Tp>
+                <Ccy>CZK</Ccy>
+                <Nm>John Doe</Nm>
+                <Ownr>
+                    <Nm>John Doe</Nm>
+                    <PstlAdr>
+                        <StrtNm>Big Street</StrtNm>
+                        <BldgNb>1</BldgNb>
+                        <PstCd>12345</PstCd>
+                        <TwnNm>Little Town</TwnNm>
+                        <Ctry>CZ</Ctry>
+                    </PstlAdr>
+                </Ownr>
+                <Svcr>
+                    <FinInstnId>
+                        <BIC>XXX</BIC>
+                        <Nm>Big Bank</Nm>
+                        <PstlAdr>
+                            <StrtNm>Little Street</StrtNm>
+                            <BldgNb>1</BldgNb>
+                            <PstCd>54321</PstCd>
+                            <TwnNm>Big Town</TwnNm>
+                            <Ctry>CZ</Ctry>
+                        </PstlAdr>
+                        <Othr>
+                            <Id>1234</Id>
+                        </Othr>
+                    </FinInstnId>
+                </Svcr>
+            </Acct>
+            <Bal>
+                <Tp>
+                    <CdOrPrtry>
+                        <Cd>PRCD</Cd>
+                    </CdOrPrtry>
+                </Tp>
+                <Amt Ccy="CZK">1000.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <Dt>
+                    <Dt>2023-03-31</Dt>
+                </Dt>
+            </Bal>
+            <Bal>
+                <Tp>
+                    <CdOrPrtry>
+                        <Cd>CLBD</Cd>
+                    </CdOrPrtry>
+                </Tp>
+                <Amt Ccy="CZK">2000.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <Dt>
+                    <Dt>2023-03-31</Dt>
+                </Dt>
+            </Bal>
+            <TxsSummry>
+                <TtlCdtNtries>
+                    <NbOfNtries>1</NbOfNtries>
+                    <Sum>1500.00</Sum>
+                </TtlCdtNtries>
+                <TtlDbtNtries>
+                    <NbOfNtries>1</NbOfNtries>
+                    <Sum>1000.00</Sum>
+                </TtlDbtNtries>
+            </TxsSummry>
+            <Ntry>
+                <NtryRef>XXX-REF-1</NtryRef>
+                <Amt Ccy="CZK">1500.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-31</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-04-01</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>CBA</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <AcctSvcrRef>XXX</AcctSvcrRef>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>CBA</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RltdPties/>
+                        <RltdAgts/>
+                        <RmtInf>
+                            <Ustrd>Incoming payment</Ustrd>
+                        </RmtInf>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
+            <Ntry>
+                <NtryRef>XXX-REF-2</NtryRef>
+                <Amt Ccy="CZK">500.00</Amt>
+                <CdtDbtInd>DBIT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-31</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-04-01</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>CBA</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <AcctSvcrRef>XXX</AcctSvcrRef>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>CBA</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RltdPties/>
+                        <RltdAgts/>
+                        <RmtInf>
+                            <Ustrd>Outbound payment</Ustrd>
+                        </RmtInf>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
+        </Stmt>
+    </BkToCstmrStmt>
+</Document>

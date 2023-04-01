@@ -1,0 +1,5 @@
+*.py[co]
+/.idea
+/venv
+/temp
+.pytest_cache/
