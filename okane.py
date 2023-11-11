@@ -36,6 +36,7 @@ from pydantic import BaseModel
 from enum import Enum
 import datetime
 from decimal import Decimal
+import warnings
 
 
 class CreditOrDebit(str, Enum):
@@ -106,7 +107,7 @@ def parse_statement(root: _Element) -> BankToCustomerStatement:
     closing_balance = None
 
     for bal in stmt.findall("Bal"):
-        bal_date = datetime.date.fromisoformat(bal.find("Dt/Dt").text)
+        bal_date = parse_date_isoformat(bal.find("Dt/Dt").text)
         amt = bal.find("Amt")
         bal_currency = amt.attrib["Ccy"]
         amount = Decimal(amt.text)
@@ -154,7 +155,7 @@ def parse_transaction(ntry: _Element) -> Transaction:
     if tmp == CreditOrDebit.DBIT:
         amount *= -1
 
-    val_date = datetime.date.fromisoformat(ntry.find("ValDt/Dt").text)
+    val_date = parse_date_isoformat(ntry.find("ValDt/Dt").text)
 
     if (rmt_inf_ustrd := ntry.find("NtryDtls/TxDtls/RmtInf/Ustrd")) is not None:
         remote_info = rmt_inf_ustrd.text
@@ -190,6 +191,14 @@ def parse_transaction(ntry: _Element) -> Transaction:
         related_account=related_account,
         related_account_bank=related_account_bank,
     )
+
+
+def parse_date_isoformat(s: str) -> datetime.date:
+    try:
+        return datetime.date.fromisoformat(s)
+    except ValueError:
+        warnings.warn(f"Invalid isoformat string: {s!r}", RuntimeWarning)
+        return datetime.date.fromisoformat(s[:10])
 
 
 def main() -> int:
