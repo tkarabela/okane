@@ -204,11 +204,11 @@ def parse_date_isoformat(s: str) -> datetime.date:
         return datetime.date.fromisoformat(s[:10])
 
 
-def main() -> int:
+def main(args: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("input_file", metavar="statement.xml")
     parser.add_argument("--version", "-V", action="version", version=__version__)
-    args = parser.parse_args()
+    args = parser.parse_args(args)
     input_file = args.input_file
 
     statement = BankToCustomerStatement.from_file(input_file)
@@ -218,4 +218,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))
