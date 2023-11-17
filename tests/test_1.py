@@ -9,7 +9,7 @@ def test_1():
 
     statement = okane.BankToCustomerStatement.from_file(path)
 
-    assert statement.account_iban == "XXX-IBAN"
+    assert statement.account_id == okane.AccountId(iban="XXX-IBAN")
     assert statement.statement_id == "XXX-STATEMENT-ID"
     assert statement.created_time == datetime.datetime(2023, 4, 1, 12, 0, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200)))
     assert statement.from_time == datetime.datetime(2023, 3, 1, 0, 0, tzinfo=datetime.timezone(datetime.timedelta(seconds=3600)))

@@ -339,6 +339,52 @@
                     </TxDtls>
                 </NtryDtls>
             </Ntry>
+            <Ntry>
+                <NtryRef>XXX-REF-6</NtryRef>
+                <Amt Ccy="CZK">1000.00</Amt>
+                <CdtDbtInd>CRDT</CdtDbtInd>
+                <RvslInd>false</RvslInd>
+                <Sts>BOOK</Sts>
+                <BookgDt>
+                    <Dt>2023-03-07</Dt>
+                </BookgDt>
+                <ValDt>
+                    <Dt>2023-03-07</Dt>
+                </ValDt>
+                <BkTxCd>
+                    <Prtry>
+                        <Cd>XXX</Cd>
+                        <Issr>Czech Banking Association</Issr>
+                    </Prtry>
+                </BkTxCd>
+                <NtryDtls>
+                    <TxDtls>
+                        <Refs>
+                            <MsgId>XXX</MsgId>
+                        </Refs>
+                        <BkTxCd>
+                            <Prtry>
+                                <Cd>XXX</Cd>
+                                <Issr>Czech Banking Association</Issr>
+                            </Prtry>
+                        </BkTxCd>
+                        <RltdPties>
+                            <DbtrAcct>
+                                <Id>
+                                    <IBAN>LT6632xxxxxx</IBAN>
+                                </Id>
+                            </DbtrAcct>
+                        </RltdPties>
+                        <RltdAgts>
+                            <DbtrAgt>
+                                <FinInstnId>
+                                    <BIC>REVOLT21</BIC>
+                                </FinInstnId>
+                            </DbtrAgt>
+                        </RltdAgts>
+                    </TxDtls>
+                </NtryDtls>
+            </Ntry>
         </Stmt>
     </BkToCstmrStmt>
 </Document>

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Copyright (c) 2023 Tomas Karabela
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,6 +31,7 @@ used by the Czech Banking Association (ČBA).
 
 import argparse
 import sys
+from typing import Optional
 from lxml import etree
 from lxml.etree import _Element
 from io import BytesIO
@@ -42,7 +45,7 @@ import warnings
 __version__ = "0.1.0"
 
 
-def get_text_or_none(e: _Element | None, path: str | None = None) -> str | None:
+def get_text_or_none(e: _Element | None, path: str | None = None, strip: bool = True) -> str | None:
     if e is None:
         return None
     else:
@@ -52,11 +55,14 @@ def get_text_or_none(e: _Element | None, path: str | None = None) -> str | None:
         if e is None:
             return None
         else:
-            return e.text
+            text = e.text
+            if strip and text is not None:
+                text = text.strip()
+            return text
 
 
-def get_text(e: _Element | None, path: str | None = None) -> str:
-    text = get_text_or_none(e, path)
+def get_text(e: _Element | None, path: str | None = None, strip: bool = True) -> str:
+    text = get_text_or_none(e, path, strip)
     if text is None:
         raise ValueError("Missing mandatory element")
     return text
@@ -75,8 +81,65 @@ def get_attribute(e: _Element, attr: str) -> str:
 
 
 class CreditOrDebit(str, Enum):
+    """CreditDebitCode per camt.053"""
     CRDT = "CRDT"
     DBIT = "DBIT"
+
+
+class BankId(BaseModel):
+    """
+    FinancialInstitutionIdentification per camt.053
+
+    Attributes:
+        bic: BIC bank code (SWIFT)
+        id: Czech bank code
+    """
+    bic: str | None = None
+    id: str | None = None
+
+    def __str__(self) -> str:
+        return self.bic or self.id or ""
+
+    @classmethod
+    def from_xml(cls, root: _Element) -> Optional["BankId"]:
+        bic = get_text_or_none(root, "BIC") or get_text_or_none(root, "BICFI")
+        id = get_text_or_none(root, "Othr/Id")
+
+        if bic or id:
+            return cls(
+                bic=bic,
+                id=id,
+            )
+        else:
+            return None
+
+
+class AccountId(BaseModel):
+    """
+    AccountIdentification4Choice per camt.053
+
+    Attributes:
+        iban: IBAN account code
+        id: Czech account code
+    """
+    iban: str | None = None
+    id: str | None = None
+
+    def __str__(self) -> str:
+        return self.iban or self.id or ""
+
+    @classmethod
+    def from_xml(cls, root: _Element) -> Optional["AccountId"]:
+        iban = get_text_or_none(root, "IBAN")
+        id = get_text_or_none(root, "Othr/Id")
+
+        if iban or id:
+            return cls(
+                iban=iban,
+                id=id,
+            )
+        else:
+            return None
 
 
 class Balance(BaseModel):
@@ -92,8 +155,8 @@ class Transaction(BaseModel):
     val_date: datetime.date
     remote_info: str | None
     additional_transaction_info: str | None
-    related_account: str | None
-    related_account_bank: str | None
+    related_account_id: AccountId | None
+    related_account_bank_id: BankId | None
 
     @property
     def info(self) -> str:
@@ -108,13 +171,20 @@ class Transaction(BaseModel):
         else:
             return remote_info or additional_transaction_info
 
+    @property
+    def related_account(self) -> str | None:
+        if self.related_account_id is None and self.related_account_bank_id is None:
+            return None
+        else:
+            return f"{self.related_account_id}/{self.related_account_bank_id}"
+
 
 class BankToCustomerStatement(BaseModel):
     statement_id: str
     created_time: datetime.datetime
     from_time: datetime.datetime
     to_time: datetime.datetime
-    account_iban: str
+    account_id: AccountId
     opening_balance: Balance | None
     closing_balance: Balance | None
     transactions: list[Transaction]
@@ -137,9 +207,12 @@ def parse_statement(root: _Element) -> BankToCustomerStatement:
     created_time = datetime.datetime.fromisoformat(get_text(stmt, "CreDtTm"))
     from_time = datetime.datetime.fromisoformat(get_text(stmt, "FrToDt/FrDtTm"))
     to_time = datetime.datetime.fromisoformat(get_text(stmt, "FrToDt/ToDtTm"))
-    account_iban = get_text(stmt, "Acct/Id/IBAN")
+    account_id = AccountId.from_xml(get_element(stmt, "Acct/Id"))
     opening_balance = None
     closing_balance = None
+
+    if account_id is None:
+        raise ValueError("Missing AccountID elements")
 
     for bal in stmt.findall("Bal"):
         bal_date = parse_date_isoformat(get_text(bal, "Dt/Dt"))
@@ -169,7 +242,7 @@ def parse_statement(root: _Element) -> BankToCustomerStatement:
         created_time=created_time,
         from_time=from_time,
         to_time=to_time,
-        account_iban=account_iban,
+        account_id=account_id,
         opening_balance=opening_balance,
         closing_balance=closing_balance,
         transactions=transactions
@@ -195,19 +268,19 @@ def parse_transaction(ntry: _Element) -> Transaction:
     remote_info = get_text_or_none(ntry, "NtryDtls/TxDtls/RmtInf/Ustrd")
     additional_transaction_info = get_text_or_none(ntry, "NtryDtls/TxDtls/AddtlTxInf")
 
-    if (elem := ntry.find("NtryDtls/TxDtls/RltdPties/DbtrAcct/Id/Othr/Id")) is not None:
-        related_account = elem.text
-    elif (elem := ntry.find("NtryDtls/TxDtls/RltdPties/CdtrAcct/Id/Othr/Id")) is not None:
-        related_account = elem.text
+    if (dbtr_acct_id := ntry.find("NtryDtls/TxDtls/RltdPties/DbtrAcct/Id")) is not None:
+        related_account_id = AccountId.from_xml(dbtr_acct_id)
+    elif (cdtr_acct_id := ntry.find("NtryDtls/TxDtls/RltdPties/CdtrAcct/Id")) is not None:
+        related_account_id = AccountId.from_xml(cdtr_acct_id)
     else:
-        related_account = None
+        related_account_id = None
 
-    if (elem := ntry.find("NtryDtls/TxDtls/RltdAgts/DbtrAgt/FinInstnId/Othr/Id")) is not None:
-        related_account_bank = elem.text
-    elif (elem := ntry.find("NtryDtls/TxDtls/RltdAgts/CdtrAgt/FinInstnId/Othr/Id")) is not None:
-        related_account_bank = elem.text
+    if (dbtr_agt_id := ntry.find("NtryDtls/TxDtls/RltdAgts/DbtrAgt/FinInstnId")) is not None:
+        related_account_bank_id = BankId.from_xml(dbtr_agt_id)
+    elif (cdtr_agt_id := ntry.find("NtryDtls/TxDtls/RltdAgts/CdtrAgt/FinInstnId")) is not None:
+        related_account_bank_id = BankId.from_xml(cdtr_agt_id)
     else:
-        related_account_bank = None
+        related_account_bank_id = None
 
     return Transaction(
         ref=ref,
@@ -216,8 +289,8 @@ def parse_transaction(ntry: _Element) -> Transaction:
         val_date=val_date,
         remote_info=remote_info,
         additional_transaction_info=additional_transaction_info,
-        related_account=related_account,
-        related_account_bank=related_account_bank,
+        related_account_id=related_account_id,
+        related_account_bank_id=related_account_bank_id,
     )
 
 
