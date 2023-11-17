@@ -1,2 +1,0 @@
-lxml~=4.9
-pydantic~=1.10
