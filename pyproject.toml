@@ -35,12 +35,18 @@ include = [
 python = "^3.10"
 lxml = "^4.9"
 pydantic = "^2.5"
+pandas = { version = "^2.1", optional = true }
+openpyxl = { version = "^3.1", optional = true }
+
+[tool.poetry.extras]
+pandas = ["pandas", "openpyxl"]
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.1"
 pytest = "^7.4"
 pytest-cov = "^4.0"
 lxml-stubs = "^0.4"
+pandas-stubs = "^2.1"
 
 [tool.poetry.scripts]
 okane = "okane:main"

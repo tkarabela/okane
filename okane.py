@@ -31,15 +31,19 @@ used by the Czech Banking Association (ČBA).
 
 import argparse
 import sys
-from typing import Optional
+from typing import Optional, Any
 from lxml import etree
 from lxml.etree import _Element
-from io import BytesIO
+from io import BytesIO, StringIO
 from pydantic import BaseModel
 from enum import Enum
 import datetime
 from decimal import Decimal
 import warnings
+try:
+    import pandas as pd
+except ImportError:
+    pd = None  # type: ignore[assignment]
 
 
 __version__ = "0.1.0"
@@ -231,6 +235,16 @@ class BankToCustomerStatement(BaseModel):
 
         return parse_statement(root)
 
+    def as_dataframe(self) -> "pd.DataFrame":
+        if pd is None:
+            raise RuntimeError("pandas is not installed")
+
+        rows = [flatten_dict(tx.model_dump(), prefix="transaction.") for tx in self.transactions]
+        df = pd.DataFrame.from_records(rows)
+        df["statement.id"] = self.statement_id
+        df["statement.account_id"] = str(self.account_id)
+        return df
+
 
 def parse_statement(root: _Element) -> BankToCustomerStatement:
     stmt = get_element(root, "BkToCstmrStmt/Stmt")
@@ -335,20 +349,76 @@ def parse_date_isoformat(s: str) -> datetime.date:
         return datetime.date.fromisoformat(s[:10])
 
 
+def flatten_dict(d: dict[str, Any], prefix: str = "") -> dict[str, Any]:
+    output = {}
+    for k, v in d.items():
+        if isinstance(v, dict):
+            output.update(flatten_dict(v, prefix=f"{prefix}{k}."))
+        else:
+            output[f"{prefix}{k}"] = v
+    return output
+
+
+class OutputFormat(str, Enum):
+    JSON = "json"
+    CSV = "csv"
+    XLSX = "xlsx"
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("input_files", nargs="+", metavar="statement.xml")
+    parser.add_argument("input_files", nargs="+", metavar="statement.xml",
+                        help="path to input camt.053 XML file(s)")
     parser.add_argument("--version", "-V", action="version", version=__version__)
+    parser.add_argument("--output", "-o", metavar="FILE", default="-", help="path to output file "
+                        "(default: write to stdout)")
+    parser.add_argument("--format", "-f", choices=[fmt.value for fmt in OutputFormat],
+                        type=OutputFormat, default=OutputFormat.JSON, help="set output format (default: json)")
+    parser.add_argument("--no-indent", action="store_true", help="do not indent JSON output files")
+
     args = parser.parse_args(argv)
     input_files = args.input_files
+    output_path = args.output
+    output_format = args.format
+    no_indent = args.no_indent
 
-    if len(input_files) == 1:
-        statement = BankToCustomerStatement.from_file(input_files[0])
-        print(statement.model_dump_json(indent=4))
+    statements = [BankToCustomerStatement.from_file(path) for path in input_files]
+
+    output_bytes = b""
+
+    match output_format:
+        case OutputFormat.JSON:
+            for statement in statements:
+                output_bytes += statement.model_dump_json(indent=None if no_indent else 4).encode("utf-8")
+                output_bytes += b"\n"
+        case OutputFormat.CSV:
+            dfs = []
+            for statement in statements:
+                df = statement.as_dataframe()
+                dfs.append(df)
+            assert pd is not None
+            all_df = pd.concat(dfs)
+            buf = StringIO()
+            all_df.to_csv(buf, index=False)
+            output_bytes = buf.getvalue().encode("utf-8")
+        case OutputFormat.XLSX:
+            dfs = []
+            for statement in statements:
+                df = statement.as_dataframe()
+                dfs.append(df)
+            assert pd is not None
+            all_df = pd.concat(dfs)
+            buf_bin = BytesIO()
+            all_df.to_excel(buf_bin, index=False)
+            output_bytes = buf_bin.getvalue()
+        case _:
+            raise NotImplementedError(f"Unsupported output format {output_format}")
+
+    if output_path == "-":
+        sys.stdout.buffer.write(output_bytes)
     else:
-        for path in input_files:
-            statement = BankToCustomerStatement.from_file(path)
-            print(statement.model_dump_json())
+        with open(output_path, "wb") as fp:
+            fp.write(output_bytes)
 
     return 0
 
