@@ -42,6 +42,38 @@ import warnings
 __version__ = "0.1.0"
 
 
+def get_text_or_none(e: _Element | None, path: str | None = None) -> str | None:
+    if e is None:
+        return None
+    else:
+        if path is not None:
+            e = e.find(path)
+
+        if e is None:
+            return None
+        else:
+            return e.text
+
+
+def get_text(e: _Element | None, path: str | None = None) -> str:
+    text = get_text_or_none(e, path)
+    if text is None:
+        raise ValueError("Missing mandatory element")
+    return text
+
+
+def get_element(root: _Element, path: str) -> _Element:
+    e = root.find(path)
+    if e is None:
+        raise ValueError(f"Missing mandatory element ({path})")
+    return e
+
+
+def get_attribute(e: _Element, attr: str) -> str:
+    value = e.attrib[attr]
+    return str(value)
+
+
 class CreditOrDebit(str, Enum):
     CRDT = "CRDT"
     DBIT = "DBIT"
@@ -100,24 +132,24 @@ class BankToCustomerStatement(BaseModel):
 
 
 def parse_statement(root: _Element) -> BankToCustomerStatement:
-    stmt = root.find("BkToCstmrStmt/Stmt")
-    statement_id = stmt.find("Id").text
-    created_time = datetime.datetime.fromisoformat(stmt.find("CreDtTm").text)
-    from_time = datetime.datetime.fromisoformat(stmt.find("FrToDt/FrDtTm").text)
-    to_time = datetime.datetime.fromisoformat(stmt.find("FrToDt/ToDtTm").text)
-    account_iban = stmt.find("Acct/Id/IBAN").text
+    stmt = get_element(root, "BkToCstmrStmt/Stmt")
+    statement_id = get_text(stmt.find("Id"))
+    created_time = datetime.datetime.fromisoformat(get_text(stmt, "CreDtTm"))
+    from_time = datetime.datetime.fromisoformat(get_text(stmt, "FrToDt/FrDtTm"))
+    to_time = datetime.datetime.fromisoformat(get_text(stmt, "FrToDt/ToDtTm"))
+    account_iban = get_text(stmt, "Acct/Id/IBAN")
     opening_balance = None
     closing_balance = None
 
     for bal in stmt.findall("Bal"):
-        bal_date = parse_date_isoformat(bal.find("Dt/Dt").text)
-        amt = bal.find("Amt")
-        bal_currency = amt.attrib["Ccy"]
-        amount = Decimal(amt.text)
-        tmp = CreditOrDebit(bal.find("CdtDbtInd").text)
+        bal_date = parse_date_isoformat(get_text(bal, "Dt/Dt"))
+        amt = get_element(bal, "Amt")
+        bal_currency = get_attribute(amt, "Ccy")
+        amount = Decimal(get_text(amt))
+        tmp = CreditOrDebit(get_text(bal, "CdtDbtInd"))
         if tmp == CreditOrDebit.DBIT:
             amount *= -1
-        tmp = bal.find("Tp/CdOrPrtry/Cd").text
+        tmp2 = get_text(bal, "Tp/CdOrPrtry/Cd")
 
         balance = Balance(
             amount=amount,
@@ -125,9 +157,9 @@ def parse_statement(root: _Element) -> BankToCustomerStatement:
             date=bal_date
         )
 
-        if tmp == "PRCD":
+        if tmp2 == "PRCD":
             opening_balance = balance
-        elif tmp == "CLBD":
+        elif tmp2 == "CLBD":
             closing_balance = balance
 
     transactions = parse_transactions(stmt)
@@ -149,26 +181,19 @@ def parse_transactions(stmt: _Element) -> list[Transaction]:
 
 
 def parse_transaction(ntry: _Element) -> Transaction:
-    ref = ntry.find("NtryRef").text
+    ref = get_text(ntry, "NtryRef")
 
-    amt = ntry.find("Amt")
-    currency = amt.attrib["Ccy"]
-    amount = Decimal(amt.text)
-    tmp = CreditOrDebit(ntry.find("CdtDbtInd").text)
+    amt = get_element(ntry, "Amt")
+    currency = get_attribute(amt, "Ccy")
+    amount = Decimal(get_text(amt))
+    tmp = CreditOrDebit(get_text(ntry, "CdtDbtInd"))
     if tmp == CreditOrDebit.DBIT:
         amount *= -1
 
-    val_date = parse_date_isoformat(ntry.find("ValDt/Dt").text)
+    val_date = parse_date_isoformat(get_text(ntry, "ValDt/Dt"))
 
-    if (rmt_inf_ustrd := ntry.find("NtryDtls/TxDtls/RmtInf/Ustrd")) is not None:
-        remote_info = rmt_inf_ustrd.text
-    else:
-        remote_info = None
-
-    if (addtnl_tx_inf := ntry.find("NtryDtls/TxDtls/AddtlTxInf")) is not None:
-        additional_transaction_info = addtnl_tx_inf.text
-    else:
-        additional_transaction_info = None
+    remote_info = get_text_or_none(ntry, "NtryDtls/TxDtls/RmtInf/Ustrd")
+    additional_transaction_info = get_text_or_none(ntry, "NtryDtls/TxDtls/AddtlTxInf")
 
     if (elem := ntry.find("NtryDtls/TxDtls/RltdPties/DbtrAcct/Id/Othr/Id")) is not None:
         related_account = elem.text
@@ -204,11 +229,11 @@ def parse_date_isoformat(s: str) -> datetime.date:
         return datetime.date.fromisoformat(s[:10])
 
 
-def main(args: list[str]) -> int:
+def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("input_file", metavar="statement.xml")
     parser.add_argument("--version", "-V", action="version", version=__version__)
-    args = parser.parse_args(args)
+    args = parser.parse_args(argv)
     input_file = args.input_file
 
     statement = BankToCustomerStatement.from_file(input_file)
