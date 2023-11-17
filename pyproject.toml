@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "okane"
+version = "0.1.0"
+description = "Parser for bank statements in camt.053 XML format (Czech Banking Association dialect)"
+authors = ["Tomas Karabela <tkarabela@seznam.cz>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+lxml = "^4.9"
+pydantic = "^1.10"
+
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.1"
+pytest = "^7.2"
+lxml-stubs = "^0.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

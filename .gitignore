@@ -3,3 +3,4 @@
 /venv
 /temp
 .pytest_cache/
+poetry.lock
