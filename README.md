@@ -1,5 +1,9 @@
 [![CI - build](https://img.shields.io/github/actions/workflow/status/tkarabela/okane/main.yml?branch=master)](https://github.com/tkarabela/okane/actions)
 [![CI - coverage](https://img.shields.io/codecov/c/github/tkarabela/okane)](https://app.codecov.io/github/tkarabela/okane)
+![PyPI - Version](https://img.shields.io/pypi/v/okane.svg?style=flat-square)
+![PyPI - Status](https://img.shields.io/pypi/status/okane.svg?style=flat-square)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/okane.svg?style=flat-square)
+![License](https://img.shields.io/pypi/l/okane.svg?style=flat-square)
 
 # お<ruby>金<rt>かね</rt></ruby> 【okane】
 
@@ -8,6 +12,12 @@ used by the Czech Banking Association (ČBA).
 
 It parses `BkToCstmrStmt` XML element into `okane.BankToCustomerStatement` which is
 a Pydantic model.
+
+## Installation
+
+```shell
+pip install okane
+```
 
 ## Example
 
@@ -68,4 +78,4 @@ $ ./okane.py my_banking_statement.xml
 
 ## License
 
-MIT - see [LICENSE.txt](./LICENSE.txt).
+MIT – see [LICENSE.txt](./LICENSE.txt).
