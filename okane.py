@@ -39,6 +39,9 @@ from decimal import Decimal
 import warnings
 
 
+__version__ = "0.1.0"
+
+
 class CreditOrDebit(str, Enum):
     CRDT = "CRDT"
     DBIT = "DBIT"
@@ -204,6 +207,7 @@ def parse_date_isoformat(s: str) -> datetime.date:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("input_file", metavar="statement.xml")
+    parser.add_argument("--version", "-V", action="version", version=__version__)
     args = parser.parse_args()
     input_file = args.input_file
 
