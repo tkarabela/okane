@@ -36,6 +36,8 @@ pip install okane
     AccountId(iban='LT6632xxxxxx', id=None)
     >>> statement.transactions[5].related_account_bank_id
     BankId(bic='REVOLT21', id=None)
+    >>> statement.transactions[3].ref
+    TransactionRef(message_id='XXX', end_to_end_id='XXX', account_servicer_ref=None, payment_invocation_id=None, instruction_id=None, mandate_id=None, cheque_number=None, clearing_system_ref=None)
 
 ### Command-line interface
 
@@ -80,7 +82,17 @@ okane ./tests/data/test2.xml
     },
     "transactions": [
         {
-            "ref": "XXX-REF-1",
+            "ref": {
+                "message_id": "XXX",
+                "end_to_end_id": "XXX",
+                "account_servicer_ref": null,
+                "payment_invocation_id": null,
+                "instruction_id": null,
+                "mandate_id": null,
+                "cheque_number": null,
+                "clearing_system_ref": null
+            },
+            "entry_ref": "XXX-REF-1",
             "amount": "-100.00",
             "currency": "CZK",
             "val_date": "2023-03-01",
@@ -90,7 +102,17 @@ okane ./tests/data/test2.xml
             "related_account_bank_id": null
         },
         {
-            "ref": "XXX-REF-2",
+            "ref": {
+                "message_id": "XXX",
+                "end_to_end_id": "XXX",
+                "account_servicer_ref": null,
+                "payment_invocation_id": null,
+                "instruction_id": null,
+                "mandate_id": null,
+                "cheque_number": null,
+                "clearing_system_ref": null
+            },
+            "entry_ref": "XXX-REF-2",
             "amount": "-200.00",
             "currency": "CZK",
             "val_date": "2023-03-02",
@@ -106,7 +128,17 @@ okane ./tests/data/test2.xml
             }
         },
         {
-            "ref": "XXX-REF-3",
+            "ref": {
+                "message_id": "XXX",
+                "end_to_end_id": null,
+                "account_servicer_ref": null,
+                "payment_invocation_id": null,
+                "instruction_id": null,
+                "mandate_id": null,
+                "cheque_number": null,
+                "clearing_system_ref": null
+            },
+            "entry_ref": "XXX-REF-3",
             "amount": "1000.00",
             "currency": "CZK",
             "val_date": "2023-03-07",
@@ -122,7 +154,17 @@ okane ./tests/data/test2.xml
             }
         },
         {
-            "ref": "XXX-REF-4",
+            "ref": {
+                "message_id": "XXX",
+                "end_to_end_id": "XXX",
+                "account_servicer_ref": null,
+                "payment_invocation_id": null,
+                "instruction_id": null,
+                "mandate_id": null,
+                "cheque_number": null,
+                "clearing_system_ref": null
+            },
+            "entry_ref": "XXX-REF-4",
             "amount": "400.00",
             "currency": "CZK",
             "val_date": "2023-03-08",
@@ -138,7 +180,17 @@ okane ./tests/data/test2.xml
             }
         },
         {
-            "ref": "XXX-REF-5",
+            "ref": {
+                "message_id": "XXX",
+                "end_to_end_id": "XXX",
+                "account_servicer_ref": null,
+                "payment_invocation_id": null,
+                "instruction_id": null,
+                "mandate_id": null,
+                "cheque_number": null,
+                "clearing_system_ref": null
+            },
+            "entry_ref": "XXX-REF-5",
             "amount": "-100.00",
             "currency": "CZK",
             "val_date": "2023-03-31",
@@ -148,7 +200,17 @@ okane ./tests/data/test2.xml
             "related_account_bank_id": null
         },
         {
-            "ref": "XXX-REF-6",
+            "ref": {
+                "message_id": "XXX",
+                "end_to_end_id": null,
+                "account_servicer_ref": null,
+                "payment_invocation_id": null,
+                "instruction_id": null,
+                "mandate_id": null,
+                "cheque_number": null,
+                "clearing_system_ref": null
+            },
+            "entry_ref": "XXX-REF-6",
             "amount": "1000.00",
             "currency": "CZK",
             "val_date": "2023-03-07",

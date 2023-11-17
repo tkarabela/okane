@@ -142,6 +142,36 @@ class AccountId(BaseModel):
             return None
 
 
+class TransactionRef(BaseModel):
+    message_id: str | None = None
+    end_to_end_id: str | None = None
+    account_servicer_ref: str | None = None
+    payment_invocation_id: str | None = None
+    instruction_id: str | None = None
+    mandate_id: str | None = None
+    cheque_number: str | None = None
+    clearing_system_ref: str | None = None
+
+    def __str__(self) -> str:
+        return ", ".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
+
+    @classmethod
+    def from_xml(cls, root: _Element | None) -> "TransactionRef":
+        if root is None:
+            return cls()
+        else:
+            return cls(
+                message_id=get_text_or_none(root, "MsgId"),
+                account_servicer_ref=get_text_or_none(root, "AcctSvcrRef"),
+                payment_invocation_id=get_text_or_none(root, "PmtInfId"),
+                instruction_id=get_text_or_none(root, "InstrId"),
+                end_to_end_id=get_text_or_none(root, "EndToEndId"),
+                mandate_id=get_text_or_none(root, "MndtId"),
+                cheque_number=get_text_or_none(root, "ChqNb"),
+                clearing_system_ref=get_text_or_none(root, "ClrSysRef"),
+            )
+
+
 class Balance(BaseModel):
     amount: Decimal
     currency: str
@@ -149,7 +179,8 @@ class Balance(BaseModel):
 
 
 class Transaction(BaseModel):
-    ref: str
+    ref: TransactionRef
+    entry_ref: str
     amount: Decimal
     currency: str
     val_date: datetime.date
@@ -254,7 +285,8 @@ def parse_transactions(stmt: _Element) -> list[Transaction]:
 
 
 def parse_transaction(ntry: _Element) -> Transaction:
-    ref = get_text(ntry, "NtryRef")
+    entry_ref = get_text(ntry, "NtryRef")
+    ref = TransactionRef.from_xml(ntry.find("NtryDtls/TxDtls/Refs"))
 
     amt = get_element(ntry, "Amt")
     currency = get_attribute(amt, "Ccy")
@@ -283,6 +315,7 @@ def parse_transaction(ntry: _Element) -> Transaction:
         related_account_bank_id = None
 
     return Transaction(
+        entry_ref=entry_ref,
         ref=ref,
         amount=amount,
         currency=currency,

@@ -28,13 +28,15 @@ def test_1():
     t1 = statement.transactions[0]
     assert t1.amount == 1500
     assert t1.currency == "CZK"
-    assert t1.ref == "XXX-REF-1"
+    assert t1.entry_ref == "XXX-REF-1"
+    assert t1.ref == okane.TransactionRef(account_servicer_ref="XXX")
+    assert str(t1.ref) == 'account_servicer_ref=XXX'
     assert t1.val_date == datetime.date(2023, 4, 1)
     assert t1.info == 'Incoming payment'
 
     t2 = statement.transactions[1]
     assert t2.amount == -500
     assert t2.currency == "CZK"
-    assert t2.ref == "XXX-REF-2"
+    assert t2.entry_ref == "XXX-REF-2"
     assert t2.val_date == datetime.date(2023, 4, 1)
     assert t2.info == 'Outbound payment'
