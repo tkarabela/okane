@@ -337,13 +337,18 @@ def parse_date_isoformat(s: str) -> datetime.date:
 
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("input_file", metavar="statement.xml")
+    parser.add_argument("input_files", nargs="+", metavar="statement.xml")
     parser.add_argument("--version", "-V", action="version", version=__version__)
     args = parser.parse_args(argv)
-    input_file = args.input_file
+    input_files = args.input_files
 
-    statement = BankToCustomerStatement.from_file(input_file)
-    print(statement.model_dump_json(indent=4))
+    if len(input_files) == 1:
+        statement = BankToCustomerStatement.from_file(input_files[0])
+        print(statement.model_dump_json(indent=4))
+    else:
+        for path in input_files:
+            statement = BankToCustomerStatement.from_file(path)
+            print(statement.model_dump_json())
 
     return 0
 
