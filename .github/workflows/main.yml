@@ -40,9 +40,10 @@ jobs:
     - name: Typecheck with mypy
       run: |
         poetry run mypy okane.py
-    - name: Test with pytest
+    - name: Test with pytest and doctest
       run: |
         poetry run python -m pytest
+        poetry run python -m doctest -v README.md
     - name: Generate coverage report for okane.py
       run: |
         poetry run python -m pytest --cov=okane --cov-report=xml
