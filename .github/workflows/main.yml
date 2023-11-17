@@ -36,7 +36,7 @@ jobs:
         installer-parallel: true
     - name: Install dependencies
       run: |
-        poetry install --no-interaction --no-root
+        poetry install --no-interaction --no-root --all-extras
     - name: Typecheck with mypy
       run: |
         poetry run mypy okane.py
