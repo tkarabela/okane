@@ -1,4 +1,5 @@
 [![CI - build](https://img.shields.io/github/actions/workflow/status/tkarabela/okane/main.yml?branch=master)](https://github.com/tkarabela/okane/actions)
+[![CI - coverage](https://img.shields.io/codecov/c/github/tkarabela/okane)](https://app.codecov.io/github/tkarabela/okane)
 
 # お<ruby>金<rt>かね</rt></ruby> 【okane】
 
