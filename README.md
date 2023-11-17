@@ -244,3 +244,17 @@ MIT – see [LICENSE.txt](./LICENSE.txt).
 
 [1]: https://www.iso20022.org/iso-20022-message-definitions?search=camt.053
 [2]: https://cbaonline.cz/formaty-xml-pro-vzajemnou-komunikaci-bank-s-klienty
+
+## Changelog
+
+### 0.2.0
+
+- Added `AccountId`, `BankId` models to handle IBAN/BIC codes
+- Added `TransactionRef` model to store transaction references, eg. end-to-end reference
+- Pandas integration: `BankToCustomerStatement.as_dataframe()`
+- Pandas integration: `okane` CLI tool can merge multiple input XMLs into one CSV/XLSX
+- Upgraded Pydantic version from 1.10 to 2.5
+
+### 0.1.0
+
+- Initial release

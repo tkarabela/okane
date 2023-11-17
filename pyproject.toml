@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "okane"
-version = "0.1.0"
+version = "0.2.0"
 description = "Parser for bank statements in camt.053 XML format (Czech Banking Association dialect)"
 authors = ["Tomas Karabela <tkarabela@seznam.cz>"]
 license = "MIT"

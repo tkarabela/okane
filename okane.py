@@ -46,7 +46,7 @@ except ImportError:
     pd = None  # type: ignore[assignment]
 
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 
 def get_text_or_none(e: _Element | None, path: str | None = None, strip: bool = True) -> str | None:
