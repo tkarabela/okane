@@ -1,5 +1,6 @@
 [![CI - build](https://img.shields.io/github/actions/workflow/status/tkarabela/okane/main.yml?branch=master)](https://github.com/tkarabela/okane/actions)
 [![CI - coverage](https://img.shields.io/codecov/c/github/tkarabela/okane)](https://app.codecov.io/github/tkarabela/okane)
+![MyPy checked](http://www.mypy-lang.org/static/mypy_badge.svg)
 ![PyPI - Version](https://img.shields.io/pypi/v/okane.svg?style=flat-square)
 ![PyPI - Status](https://img.shields.io/pypi/status/okane.svg?style=flat-square)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/okane.svg?style=flat-square)
@@ -21,8 +22,25 @@ pip install okane
 
 ## Example
 
+### Python API
+
+    >>> import okane
+    >>> statement = okane.BankToCustomerStatement.from_file("./tests/data/test2.xml")
+    >>> statement.opening_balance
+    Balance(amount=Decimal('1000.00'), currency='CZK', date=datetime.date(2023, 3, 1))
+    >>> statement.transactions[5].amount
+    Decimal('1000.00')
+    >>> statement.transactions[5].currency
+    'CZK'
+    >>> statement.transactions[5].related_account_id
+    AccountId(iban='LT6632xxxxxx', id=None)
+    >>> statement.transactions[5].related_account_bank_id
+    BankId(bic='REVOLT21', id=None)
+
+### Command-line interface
+
 ```shell
-head my_banking_statement.xml
+head ./tests/data/test2.xml
 ```
 
 ```xml
@@ -37,20 +55,23 @@ head my_banking_statement.xml
 ```
 
 ```shell
-okane my_banking_statement.xml
+okane ./tests/data/test2.xml
 ```
 
 ```json
-{                                               
-    "statement_id": "XXX-STATEMENT-ID",         
+{
+    "statement_id": "XXX-STATEMENT-ID",
     "created_time": "2023-04-01T12:00:00+02:00",
-    "from_time": "2023-03-01T00:00:00+01:00",   
-    "to_time": "2023-03-31T00:00:00+02:00",     
-    "account_iban": "XXX-IBAN",                 
-    "opening_balance": {                        
+    "from_time": "2023-03-01T00:00:00+01:00",
+    "to_time": "2023-03-31T23:59:59.999000+02:00",
+    "account_id": {
+        "iban": "XXX-IBAN",
+        "id": null
+    },
+    "opening_balance": {
         "amount": "1000.00",
         "currency": "CZK",
-        "date": "2023-03-31"
+        "date": "2023-03-01"
     },
     "closing_balance": {
         "amount": "2000.00",
@@ -60,23 +81,87 @@ okane my_banking_statement.xml
     "transactions": [
         {
             "ref": "XXX-REF-1",
-            "amount": "1500.00",
+            "amount": "-100.00",
             "currency": "CZK",
-            "val_date": "2023-04-01",
-            "remote_info": "Incoming payment",
-            "additional_transaction_info": null,
-            "related_account": null,
-            "related_account_bank": null
+            "val_date": "2023-03-01",
+            "remote_info": "Nákup dne 27.2.2023, částka 100.00 CZK",
+            "additional_transaction_info": "Nákup dne 27.2.2023, částka 100.00 CZK",
+            "related_account_id": null,
+            "related_account_bank_id": null
         },
         {
             "ref": "XXX-REF-2",
-            "amount": "-500.00",
+            "amount": "-200.00",
             "currency": "CZK",
-            "val_date": "2023-04-01",
-            "remote_info": "Outbound payment",
+            "val_date": "2023-03-02",
+            "remote_info": null,
+            "additional_transaction_info": "transaction note",
+            "related_account_id": {
+                "iban": null,
+                "id": "XXX-OTHER-ACC"
+            },
+            "related_account_bank_id": {
+                "bic": null,
+                "id": "XXX-OTHER-BANK"
+            }
+        },
+        {
+            "ref": "XXX-REF-3",
+            "amount": "1000.00",
+            "currency": "CZK",
+            "val_date": "2023-03-07",
+            "remote_info": null,
             "additional_transaction_info": null,
-            "related_account": null,
-            "related_account_bank": null
+            "related_account_id": {
+                "iban": null,
+                "id": "XXX-OTHER-ACC"
+            },
+            "related_account_bank_id": {
+                "bic": null,
+                "id": "XXX-OTHER-BANK"
+            }
+        },
+        {
+            "ref": "XXX-REF-4",
+            "amount": "400.00",
+            "currency": "CZK",
+            "val_date": "2023-03-08",
+            "remote_info": "description",
+            "additional_transaction_info": "RECIPIENT NAME",
+            "related_account_id": {
+                "iban": null,
+                "id": "XXX-OTHER-ACC"
+            },
+            "related_account_bank_id": {
+                "bic": null,
+                "id": "XXX-OTHER-BANK"
+            }
+        },
+        {
+            "ref": "XXX-REF-5",
+            "amount": "-100.00",
+            "currency": "CZK",
+            "val_date": "2023-03-31",
+            "remote_info": "transaction description",
+            "additional_transaction_info": null,
+            "related_account_id": null,
+            "related_account_bank_id": null
+        },
+        {
+            "ref": "XXX-REF-6",
+            "amount": "1000.00",
+            "currency": "CZK",
+            "val_date": "2023-03-07",
+            "remote_info": null,
+            "additional_transaction_info": null,
+            "related_account_id": {
+                "iban": "LT6632xxxxxx",
+                "id": null
+            },
+            "related_account_bank_id": {
+                "bic": "REVOLT21",
+                "id": null
+            }
         }
     ]
 }
