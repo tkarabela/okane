@@ -15,19 +15,19 @@ def test_cli(capsys):
         "to_time": "2023-03-31T23:59:59.999000+02:00",
         "account_iban": "XXX-IBAN",
         "opening_balance": {
-            "amount": 1000.0,
+            "amount": "1000.00",
             "currency": "CZK",
             "date": "2023-03-01"
         },
         "closing_balance": {
-            "amount": 2000.0,
+            "amount": "2000.00",
             "currency": "CZK",
             "date": "2023-03-31"
         },
         "transactions": [
             {
                 "ref": "XXX-REF-1",
-                "amount": -100.0,
+                "amount": "-100.00",
                 "currency": "CZK",
                 "val_date": "2023-03-01",
                 "remote_info": "Nákup dne 27.2.2023, částka 100.00 CZK\n                            ",
@@ -37,7 +37,7 @@ def test_cli(capsys):
             },
             {
                 "ref": "XXX-REF-2",
-                "amount": -200.0,
+                "amount": "-200.00",
                 "currency": "CZK",
                 "val_date": "2023-03-02",
                 "remote_info": None,
@@ -47,7 +47,7 @@ def test_cli(capsys):
             },
             {
                 "ref": "XXX-REF-3",
-                "amount": 1000.0,
+                "amount": "1000.00",
                 "currency": "CZK",
                 "val_date": "2023-03-07",
                 "remote_info": None,
@@ -57,7 +57,7 @@ def test_cli(capsys):
             },
             {
                 "ref": "XXX-REF-4",
-                "amount": 400.0,
+                "amount": "400.00",
                 "currency": "CZK",
                 "val_date": "2023-03-08",
                 "remote_info": "description",
@@ -67,7 +67,7 @@ def test_cli(capsys):
             },
             {
                 "ref": "XXX-REF-5",
-                "amount": -100.0,
+                "amount": "-100.00",
                 "currency": "CZK",
                 "val_date": "2023-03-31",
                 "remote_info": "transaction description",

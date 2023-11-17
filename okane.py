@@ -212,7 +212,7 @@ def main(args: list[str]) -> int:
     input_file = args.input_file
 
     statement = BankToCustomerStatement.from_file(input_file)
-    print(statement.json(indent=4, ensure_ascii=False))
+    print(statement.model_dump_json(indent=4))
 
     return 0
 

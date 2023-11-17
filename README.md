@@ -21,8 +21,11 @@ pip install okane
 
 ## Example
 
+```shell
+head my_banking_statement.xml
 ```
-$ head my_banking_statement.xml
+
+```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02">
     <BkToCstmrStmt>
@@ -31,8 +34,13 @@ $ head my_banking_statement.xml
             <CreDtTm>2023-04-01T12:00:00.000+02:00</CreDtTm>
             <MsgRcpt>
                 <Nm>John Doe</Nm>
+```
 
-$ ./okane.py my_banking_statement.xml
+```shell
+okane my_banking_statement.xml
+```
+
+```json
 {                                               
     "statement_id": "XXX-STATEMENT-ID",         
     "created_time": "2023-04-01T12:00:00+02:00",
@@ -40,19 +48,19 @@ $ ./okane.py my_banking_statement.xml
     "to_time": "2023-03-31T00:00:00+02:00",     
     "account_iban": "XXX-IBAN",                 
     "opening_balance": {                        
-        "amount": 1000.0,
+        "amount": "1000.00",
         "currency": "CZK",
         "date": "2023-03-31"
     },
     "closing_balance": {
-        "amount": 2000.0,
+        "amount": "2000.00",
         "currency": "CZK",
         "date": "2023-03-31"
     },
     "transactions": [
         {
             "ref": "XXX-REF-1",
-            "amount": 1500.0,
+            "amount": "1500.00",
             "currency": "CZK",
             "val_date": "2023-04-01",
             "remote_info": "Incoming payment",
@@ -62,7 +70,7 @@ $ ./okane.py my_banking_statement.xml
         },
         {
             "ref": "XXX-REF-2",
-            "amount": -500.0,
+            "amount": "-500.00",
             "currency": "CZK",
             "val_date": "2023-04-01",
             "remote_info": "Outbound payment",
@@ -72,7 +80,6 @@ $ ./okane.py my_banking_statement.xml
         }
     ]
 }
-
 ```
 
 
