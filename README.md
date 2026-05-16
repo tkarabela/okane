@@ -11,7 +11,7 @@
 _okane_ is a pure Python parser for bank statements in camt.053 XML format [[1]], in dialect
 used by the Czech Banking Association (ČBA) [[2]].
 
-It parses `BkToCstmrStmt` XML element into `okane.BankToCustomerStatement` which is
+It parses `BkToCstmrStmt` XML element into `okane.models.BankToCustomerStatement` which is
 a Pydantic model. It can also work as a CLI tool, converting camt.053 XML files to JSON or CSV.
 
 ## Installation
@@ -246,6 +246,13 @@ MIT – see [LICENSE.txt](./LICENSE.txt).
 [2]: https://cbaonline.cz/formaty-xml-pro-vzajemnou-komunikaci-bank-s-klienty
 
 ## Changelog
+
+### 0.3.0
+
+- Refactored code into a package (it should not break most callers)
+- Upgraded dependencies (works with Pandas 2.x or 3.x, lxml 5.x or 6.x)
+- Added support for Python 3.13, 3.14; removed support for Python 3.10, 3.11
+- Switched project management from Poetry to uv
 
 ### 0.2.0
 
