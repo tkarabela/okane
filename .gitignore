@@ -1,9 +1,8 @@
 *.py[co]
 /.idea
-/venv
 /temp
 /dist
 .pytest_cache/
-poetry.lock
+/.venv
 .coverage
 coverage.xml

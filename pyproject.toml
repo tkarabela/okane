@@ -1,12 +1,13 @@
-[tool.poetry]
+[project]
 name = "okane"
-version = "0.2.0"
+dynamic = ["version"]
 description = "Parser for bank statements in camt.053 XML format (Czech Banking Association dialect)"
-authors = ["Tomas Karabela <tkarabela@seznam.cz>"]
-license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/tkarabela/okane"
-repository = "https://github.com/tkarabela/okane"
+license = { file = "LICENSE.txt" }
+authors = [
+    { name = "Tomas Karabela", email = "tkarabela@seznam.cz" },
+]
+requires-python = ">=3.10"
 keywords = ["finance", "czech", "banking", "sepa", "expenses", "camt053"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -17,43 +18,58 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: File Formats",
     "Topic :: Office/Business :: Financial :: Accounting",
     "Typing :: Typed",
 ]
-packages = [
-    { include = "okane.py" },
-]
-include = [
-    { path = "tests", format = "sdist" },
+dependencies = [
+    "lxml>=4.9",
+    "pydantic~=2.5",
 ]
 
-[tool.poetry.urls]
+[project.optional-dependencies]
+pandas = [
+    "pandas~=2.1",
+    "openpyxl~=3.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/tkarabela/okane"
+Repository = "https://github.com/tkarabela/okane"
 "Bug Tracker" = "https://github.com/tkarabela/okane/issues"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-lxml = "^4.9"
-pydantic = "^2.5"
-pandas = { version = "^2.1", optional = true }
-openpyxl = { version = "^3.1", optional = true }
-
-[tool.poetry.extras]
-pandas = ["pandas", "openpyxl"]
-
-[tool.poetry.group.dev.dependencies]
-mypy = "^1.1"
-pytest = "^7.4"
-pytest-cov = "^4.0"
-lxml-stubs = "^0.4"
-pandas-stubs = "^2.1"
-
-[tool.poetry.scripts]
+[project.scripts]
 okane = "okane:main"
 
+[dependency-groups]
+dev = [
+    "mypy~=1.1",
+    "pytest~=7.4",
+    "pytest-cov~=4.0",
+    "lxml-stubs~=0.4",
+    "pandas-stubs~=2.1",
+    "ruff~=0.15",
+]
+
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "okane.py"
+
+[tool.hatch.build.targets.wheel]
+include = ["okane.py"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "okane.py",
+    "README.md",
+    "LICENSE.txt",
+    "tests",
+]
 
 [tool.coverage.run]
 branch = true

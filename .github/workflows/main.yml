@@ -20,36 +20,37 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    permissions:
+      contents: read
+      packages: read
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    - name: Install uv
+      uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
       with:
+        version: "0.11.14"
         python-version: ${{ matrix.python-version }}
-    - name: Install Poetry
-      uses: snok/install-poetry@v1
-      with:
-        virtualenvs-create: true
-        virtualenvs-in-project: true
-        installer-parallel: true
     - name: Install dependencies
       run: |
-        poetry install --no-interaction --no-root --all-extras
+        uv sync --all-extras --dev
     - name: Typecheck with mypy
       run: |
-        poetry run mypy okane.py
+        uv run mypy okane.py
+    - name: Check with ruff
+      run: |
+        uv run ruff check
     - name: Test with pytest and doctest
       run: |
-        poetry run python -m pytest
-        poetry run python -m doctest -v README.md
+        uv run python -m pytest
+        uv run python -m doctest -v README.md
     - name: Generate coverage report for okane.py
       run: |
-        poetry run python -m pytest --cov=okane --cov-report=xml
+        uv run python -m pytest --cov=okane --cov-report=xml
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         env_vars: OS,PYTHON
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
