@@ -58,14 +58,14 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-path = "okane.py"
+path = "src/okane/__init__.py"
 
 [tool.hatch.build.targets.wheel]
-include = ["okane.py"]
+packages = ["src/okane"]
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "okane.py",
+    "src/okane",
     "README.md",
     "LICENSE.txt",
     "tests",

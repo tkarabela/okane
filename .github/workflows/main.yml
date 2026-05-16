@@ -38,10 +38,10 @@ jobs:
         uv sync --all-extras --dev
     - name: Typecheck with mypy
       run: |
-        uv run mypy okane.py
+        uv run mypy src/okane
     - name: Check with ruff
       run: |
-        uv run ruff check
+        uv run ruff check src/okane
     - name: Test with pytest and doctest
       run: |
         uv run python -m pytest
