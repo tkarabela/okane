@@ -1,5 +1,6 @@
-from enum import Enum
+from enum import StrEnum
 from io import BytesIO, StringIO
+from typing import assert_never
 import argparse
 import sys
 
@@ -12,7 +13,7 @@ except ImportError:
     pd = None  # type: ignore[assignment]
 
 
-class OutputFormat(str, Enum):
+class OutputFormat(StrEnum):
     JSON = "json"
     CSV = "csv"
     XLSX = "xlsx"
@@ -67,7 +68,7 @@ def main(argv: list[str]) -> int:
             all_df.to_excel(buf_bin, index=False)
             output_bytes = buf_bin.getvalue()
         case _:
-            raise NotImplementedError(f"Unsupported output format {output_format}")
+            assert_never(output_format)
 
     if output_path == "-":
         sys.stdout.buffer.write(output_bytes)

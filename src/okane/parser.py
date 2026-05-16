@@ -1,5 +1,5 @@
 from decimal import Decimal
-from enum import Enum
+from enum import StrEnum
 from lxml.etree import _Element
 import datetime
 
@@ -7,7 +7,7 @@ from okane.helpers import get_element, get_text, parse_date_isoformat, get_attri
 from okane.models import BankToCustomerStatement, AccountId, Balance, Transaction, TransactionRef, BankId
 
 
-class CreditOrDebit(str, Enum):
+class CreditOrDebit(StrEnum):
     """CreditDebitCode per camt.053"""
     CRDT = "CRDT"
     DBIT = "DBIT"

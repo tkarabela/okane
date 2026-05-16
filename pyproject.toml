@@ -7,7 +7,7 @@ license = { file = "LICENSE.txt" }
 authors = [
     { name = "Tomas Karabela", email = "tkarabela@seznam.cz" },
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 keywords = ["finance", "czech", "banking", "sepa", "expenses", "camt053"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -15,8 +15,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -25,13 +23,13 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "lxml>=4.9",
+    "lxml>=5.0",
     "pydantic~=2.5",
 ]
 
 [project.optional-dependencies]
 pandas = [
-    "pandas~=2.1",
+    "pandas>=2.1",
     "openpyxl~=3.1",
 ]
 
@@ -46,7 +44,7 @@ okane = "okane:main"
 [dependency-groups]
 dev = [
     "mypy~=1.1",
-    "pytest~=7.4",
+    "pytest~=9.0",
     "pytest-cov~=4.0",
     "lxml-stubs~=0.4",
     "pandas-stubs~=2.1",

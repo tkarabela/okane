@@ -4,7 +4,7 @@ from lxml import etree
 from lxml.etree import _Element
 from pathlib import Path
 from pydantic import BaseModel
-from typing import Optional
+from typing import Self
 import datetime
 import os
 
@@ -31,7 +31,7 @@ class BankId(BaseModel):
         return self.bic or self.id or ""
 
     @classmethod
-    def from_xml(cls, root: _Element) -> Optional["BankId"]:
+    def from_xml(cls, root: _Element) -> Self | None:
         bic = get_text_or_none(root, "BIC") or get_text_or_none(root, "BICFI")
         id = get_text_or_none(root, "Othr/Id")
 
@@ -59,7 +59,7 @@ class AccountId(BaseModel):
         return self.iban or self.id or ""
 
     @classmethod
-    def from_xml(cls, root: _Element) -> Optional["AccountId"]:
+    def from_xml(cls, root: _Element) -> Self | None:
         iban = get_text_or_none(root, "IBAN")
         id = get_text_or_none(root, "Othr/Id")
 
@@ -86,7 +86,7 @@ class TransactionRef(BaseModel):
         return ", ".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
 
     @classmethod
-    def from_xml(cls, root: _Element | None) -> "TransactionRef":
+    def from_xml(cls, root: _Element | None) -> Self:
         if root is None:
             return cls()
         else:
