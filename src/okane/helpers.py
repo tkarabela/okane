@@ -1,5 +1,5 @@
-from typing import Any
 from lxml.etree import _Element
+from typing import Any
 import datetime
 import warnings
 

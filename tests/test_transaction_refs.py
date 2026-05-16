@@ -1,5 +1,6 @@
-import okane
 from lxml import etree
+
+import okane
 
 
 def test_zps():

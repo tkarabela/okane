@@ -1,7 +1,7 @@
-from lxml.etree import _Element
-from enum import Enum
-import datetime
 from decimal import Decimal
+from enum import Enum
+from lxml.etree import _Element
+import datetime
 
 from okane.helpers import get_element, get_text, parse_date_isoformat, get_attribute, get_text_or_none
 from okane.models import BankToCustomerStatement, AccountId, Balance, Transaction, TransactionRef, BankId

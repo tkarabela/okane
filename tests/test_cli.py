@@ -1,16 +1,17 @@
-import os.path as op
 import json
 from io import StringIO, BytesIO
 import pytest
+
 import okane
+
 try:
     import pandas as pd
 except Exception:
     pd = None
 
 
-def test_cli_to_json(capsys):
-    path = op.join(op.dirname(__file__), "./data/test2.xml")
+def test_cli_to_json(capsys, shared_datadir):
+    path = str(shared_datadir.joinpath("test2.xml"))
 
     assert 0 == okane.main([path])
 
@@ -20,9 +21,9 @@ def test_cli_to_json(capsys):
     assert output_dict == TEST2_REFERENCE_DICT
 
 
-def test_cli_to_json_multiple(capsys):
-    path1 = op.join(op.dirname(__file__), "./data/test1.xml")
-    path2 = op.join(op.dirname(__file__), "./data/test2.xml")
+def test_cli_to_json_multiple(capsys, shared_datadir):
+    path1 = str(shared_datadir.joinpath("test1.xml"))
+    path2 = str(shared_datadir.joinpath("test2.xml"))
 
     assert 0 == okane.main([path1, path2, "--no-indent"])
     output = capsys.readouterr().out
@@ -35,9 +36,9 @@ def test_cli_to_json_multiple(capsys):
 
 
 @pytest.mark.skipif(pd is None, reason="requires pandas")
-def test_cli_to_csv_multiple(capsys):
-    path1 = op.join(op.dirname(__file__), "./data/test1.xml")
-    path2 = op.join(op.dirname(__file__), "./data/test2.xml")
+def test_cli_to_csv_multiple(capsys, shared_datadir):
+    path1 = str(shared_datadir.joinpath("test1.xml"))
+    path2 = str(shared_datadir.joinpath("test2.xml"))
 
     statement1 = okane.BankToCustomerStatement.from_file(path1)
     statement2 = okane.BankToCustomerStatement.from_file(path2)
@@ -59,9 +60,9 @@ def test_cli_to_csv_multiple(capsys):
 
 
 @pytest.mark.skipif(pd is None, reason="requires pandas")
-def test_cli_to_excel_multiple(capsysbinary):
-    path1 = op.join(op.dirname(__file__), "./data/test1.xml")
-    path2 = op.join(op.dirname(__file__), "./data/test2.xml")
+def test_cli_to_excel_multiple(capsysbinary, shared_datadir):
+    path1 = str(shared_datadir.joinpath("test1.xml"))
+    path2 = str(shared_datadir.joinpath("test2.xml"))
 
     statement1 = okane.BankToCustomerStatement.from_file(path1)
     statement2 = okane.BankToCustomerStatement.from_file(path2)

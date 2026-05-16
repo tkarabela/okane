@@ -1,9 +1,10 @@
+from enum import Enum
+from io import BytesIO, StringIO
 import argparse
 import sys
-from io import BytesIO, StringIO
-from enum import Enum
 
 from okane.models import BankToCustomerStatement
+
 
 try:
     import pandas as pd

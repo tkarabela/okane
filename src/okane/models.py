@@ -1,10 +1,12 @@
-from typing import Optional
+from decimal import Decimal
+from io import BytesIO
 from lxml import etree
 from lxml.etree import _Element
-from io import BytesIO
+from pathlib import Path
 from pydantic import BaseModel
+from typing import Optional
 import datetime
-from decimal import Decimal
+import os
 
 from okane.helpers import get_text_or_none, flatten_dict
 
@@ -149,10 +151,8 @@ class BankToCustomerStatement(BaseModel):
     transactions: list[Transaction]
 
     @classmethod
-    def from_file(cls, path: str) -> "BankToCustomerStatement":
-        with open(path, "rb") as fp:
-            raw_xml = fp.read()
-
+    def from_file(cls, path: os.PathLike[str] | str) -> "BankToCustomerStatement":
+        raw_xml = Path(path).read_bytes()
         raw_xml_no_namespace = raw_xml.replace(b'xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02"', b"")
         tree = etree.parse(BytesIO(raw_xml_no_namespace))
         root = tree.getroot()

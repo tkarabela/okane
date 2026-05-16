@@ -1,12 +1,10 @@
-import os.path as op
 import datetime
 
 import okane
 
 
-def test_2():
-    path = op.join(op.dirname(__file__), "./data/test2.xml")
-
+def test_2(shared_datadir):
+    path = shared_datadir.joinpath("test2.xml")
     statement = okane.BankToCustomerStatement.from_file(path)
 
     assert statement.account_id == okane.AccountId(iban="XXX-IBAN")
