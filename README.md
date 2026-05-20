@@ -247,14 +247,21 @@ MIT – see [LICENSE.txt](./LICENSE.txt).
 
 ## Changelog
 
-### 0.3.0
+### 0.4.0 (2026-05-20)
+
+- Changed dataframe methods: `BankToCustomerStatement.as_dataframe()` → `BankToCustomerStatement.get_transaction_dataframe()`,
+  added new method `BankToCustomerStatement.get_balance_dataframe()`
+- Switched dataframe library from Pandas to Polars
+- Fields `opening_balance`, `closing_balance` of `BankToCustomerStatement` are now mandatory
+
+### 0.3.0 (2026-05-16)
 
 - Refactored code into a package (it should not break most callers)
 - Upgraded dependencies (works with Pandas 2.x or 3.x, lxml 5.x or 6.x)
 - Added support for Python 3.13, 3.14; removed support for Python 3.10, 3.11
 - Switched project management from Poetry to uv
 
-### 0.2.0
+### 0.2.0 (2023-11-17)
 
 - Added `AccountId`, `BankId` models to handle IBAN/BIC codes
 - Added `TransactionRef` model to store transaction references, eg. end-to-end reference
@@ -262,6 +269,6 @@ MIT – see [LICENSE.txt](./LICENSE.txt).
 - Pandas integration: `okane` CLI tool can merge multiple input XMLs into one CSV/XLSX
 - Upgraded Pydantic version from 1.10 to 2.5
 
-### 0.1.0
+### 0.1.0 (2023-11-17)
 
 - Initial release
