@@ -146,8 +146,8 @@ class BankToCustomerStatement(BaseModel):
     from_time: datetime.datetime
     to_time: datetime.datetime
     account_id: AccountId
-    opening_balance: Balance | None
-    closing_balance: Balance | None
+    opening_balance: Balance
+    closing_balance: Balance
     transactions: list[Transaction]
 
     @classmethod

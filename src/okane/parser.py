@@ -47,6 +47,11 @@ def parse_statement(root: _Element) -> BankToCustomerStatement:
         elif tmp2 == "CLBD":
             closing_balance = balance
 
+    if opening_balance is None:
+        raise ValueError("Missing opening balance")
+    elif closing_balance is None:
+        raise ValueError("Missing closing balance")
+
     transactions = parse_transactions(stmt)
 
     return BankToCustomerStatement(
