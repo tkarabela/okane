@@ -28,9 +28,8 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-pandas = [
-    "pandas>=2.1",
-    "openpyxl~=3.1",
+polars = [
+    "polars~=1.0",
 ]
 
 [project.urls]
@@ -43,7 +42,7 @@ okane = "okane:main"
 
 [dependency-groups]
 dev = [
-    "mypy~=1.1",
+    "mypy~=2.1",
     "pytest~=9.0",
     "pytest-cov~=4.0",
     "lxml-stubs~=0.4",

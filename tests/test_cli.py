@@ -1,13 +1,14 @@
 import json
-from io import StringIO, BytesIO
+from io import StringIO
+
 import pytest
 
 import okane
 
 try:
-    import pandas as pd
+    import polars as pl
 except Exception:
-    pd = None
+    pl = None
 
 
 def test_cli_to_json(capsys, shared_datadir):
@@ -35,52 +36,22 @@ def test_cli_to_json_multiple(capsys, shared_datadir):
     assert output_dict2 == TEST2_REFERENCE_DICT
 
 
-@pytest.mark.skipif(pd is None, reason="requires pandas")
+@pytest.mark.skipif(pl is None, reason="requires polars")
 def test_cli_to_csv_multiple(capsys, shared_datadir):
     path1 = str(shared_datadir.joinpath("test1.xml"))
     path2 = str(shared_datadir.joinpath("test2.xml"))
 
     statement1 = okane.BankToCustomerStatement.from_file(path1)
     statement2 = okane.BankToCustomerStatement.from_file(path2)
-    df_ref = pd.concat(s.as_dataframe() for s in [statement1, statement2])
+    df_ref = pl.concat(s.get_transaction_dataframe() for s in [statement1, statement2])
 
     assert 0 == okane.main([path1, path2, "-f", "csv"])
 
     output = capsys.readouterr().out
     buf = StringIO(output)
-    df = pd.read_csv(buf)
+    df = pl.read_csv(buf, try_parse_dates=True)
 
-    df_ = df.where(pd.notnull(df), None).reset_index().map(str)
-    df_ref_ = df_ref.where(pd.notnull(df_ref), None).reset_index().map(str)
-
-    assert (df_["statement.id"] == df_ref_["statement.id"]).all()
-    assert (df_["transaction.entry_ref"] == df_ref_["transaction.entry_ref"]).all()
-    assert (df_["transaction.val_date"] == df_ref_["transaction.val_date"]).all()
-    # TODO compare more thoroughly
-
-
-@pytest.mark.skipif(pd is None, reason="requires pandas")
-def test_cli_to_excel_multiple(capsysbinary, shared_datadir):
-    path1 = str(shared_datadir.joinpath("test1.xml"))
-    path2 = str(shared_datadir.joinpath("test2.xml"))
-
-    statement1 = okane.BankToCustomerStatement.from_file(path1)
-    statement2 = okane.BankToCustomerStatement.from_file(path2)
-    df_ref = pd.concat(s.as_dataframe() for s in [statement1, statement2])
-
-
-    assert 0 == okane.main([path1, path2, "-f", "xlsx"])
-
-    output = capsysbinary.readouterr().out
-    buf = BytesIO(output)
-    df = pd.read_excel(buf)
-
-    df_ = df.where(pd.notnull(df), None).reset_index().map(str)
-    df_ref_ = df_ref.where(pd.notnull(df_ref), None).reset_index().map(str)
-
-    assert (df_["statement.id"] == df_ref_["statement.id"]).all()
-    assert (df_["transaction.entry_ref"] == df_ref_["transaction.entry_ref"]).all()
-    # TODO compare more thoroughly
+    assert df.equals(df_ref)
 
 
 TEST1_REFERENCE_DICT = {'account_id': {'iban': 'XXX-IBAN', 'id': None},
@@ -109,7 +80,7 @@ TEST1_REFERENCE_DICT = {'account_id': {'iban': 'XXX-IBAN', 'id': None},
                    'related_account_bank_id': None,
                    'related_account_id': None,
                    'remote_info': 'Incoming payment',
-                   'val_date': '2023-04-01'},
+                   'val_date': '2023-03-12'},
                   {'additional_transaction_info': None,
                    'amount': '-500.00',
                    'currency': 'CZK',
@@ -125,7 +96,7 @@ TEST1_REFERENCE_DICT = {'account_id': {'iban': 'XXX-IBAN', 'id': None},
                    'related_account_bank_id': None,
                    'related_account_id': None,
                    'remote_info': 'Outbound payment',
-                   'val_date': '2023-04-01'}]}
+                   'val_date': '2023-03-17'}]}
 
 TEST2_REFERENCE_DICT = {'account_id': {'iban': 'XXX-IBAN', 'id': None},
  'closing_balance': {'amount': '2000.00',

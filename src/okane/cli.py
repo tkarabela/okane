@@ -1,5 +1,5 @@
 from enum import StrEnum
-from io import BytesIO, StringIO
+from io import StringIO
 from typing import assert_never
 import argparse
 import sys
@@ -8,15 +8,14 @@ from okane.models import BankToCustomerStatement
 
 
 try:
-    import pandas as pd
+    import polars as pl
 except ImportError:
-    pd = None  # type: ignore[assignment]
+    pl = None  # type: ignore[assignment]
 
 
 class OutputFormat(StrEnum):
     JSON = "json"
     CSV = "csv"
-    XLSX = "xlsx"
 
 
 def main(argv: list[str]) -> int:
@@ -50,23 +49,13 @@ def main(argv: list[str]) -> int:
         case OutputFormat.CSV:
             dfs = []
             for statement in statements:
-                df = statement.as_dataframe()
+                df = statement.get_transaction_dataframe()
                 dfs.append(df)
-            assert pd is not None
-            all_df = pd.concat(dfs)
+            assert pl is not None
+            all_df = pl.concat(dfs)
             buf = StringIO()
-            all_df.to_csv(buf, index=False)
+            all_df.write_csv(buf)
             output_bytes = buf.getvalue().encode("utf-8")
-        case OutputFormat.XLSX:
-            dfs = []
-            for statement in statements:
-                df = statement.as_dataframe()
-                dfs.append(df)
-            assert pd is not None
-            all_df = pd.concat(dfs)
-            buf_bin = BytesIO()
-            all_df.to_excel(buf_bin, index=False)
-            output_bytes = buf_bin.getvalue()
         case _:
             assert_never(output_format)
 

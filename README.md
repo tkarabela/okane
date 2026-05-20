@@ -19,8 +19,8 @@ a Pydantic model. It can also work as a CLI tool, converting camt.053 XML files 
 ```shell
 pip install okane
 
-# or, if you'd like to use the CSV, XLSX export features and access the data as `pd.DataFrame`
-pip install okane[pandas]
+# or, if you'd like to use the CSV export features and access the data as `pl.DataFrame`
+pip install okane[polars]
 ```
 
 ## Example
@@ -41,7 +41,8 @@ pip install okane[pandas]
     BankId(bic='REVOLT21', id=None)
     >>> statement.transactions[3].ref
     TransactionRef(message_id='XXX', end_to_end_id='XXX', account_servicer_ref=None, payment_invocation_id=None, instruction_id=None, mandate_id=None, cheque_number=None, clearing_system_ref=None)
-    >>> df = statement.as_dataframe()
+    >>> tx_df = statement.get_transaction_dataframe()
+    >>> balance_df = statement.get_balance_dataframe()
 
 ### Command-line interface
 
@@ -63,7 +64,6 @@ head ./tests/data/test2.xml
 ```shell
 # okane ./tests/data/test*.xml -f json --no-indent -o output.jsonl
 # okane ./tests/data/test*.xml -f csv -o output.csv
-# okane ./tests/data/test*.xml -f xlsx -o output.xlsx
 
 okane ./tests/data/test2.xml
 ```
