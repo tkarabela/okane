@@ -1,6 +1,6 @@
 [![CI - build](https://img.shields.io/github/actions/workflow/status/tkarabela/okane/main.yml?branch=master)](https://github.com/tkarabela/okane/actions)
 [![CI - coverage](https://img.shields.io/codecov/c/github/tkarabela/okane)](https://app.codecov.io/github/tkarabela/okane)
-![MyPy checked](http://www.mypy-lang.org/static/mypy_badge.svg)
+[![Static Badge](https://img.shields.io/badge/MyPy%20%26%20Pyrefly%20%26%20Ruff-checked-blue?style=flat)](https://github.com/tkarabela/handcron/actions)
 ![PyPI - Version](https://img.shields.io/pypi/v/okane.svg?style=flat-square)
 ![PyPI - Status](https://img.shields.io/pypi/status/okane.svg?style=flat-square)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/okane.svg?style=flat-square)
@@ -107,7 +107,14 @@ okane ./tests/data/test2.xml
             "remote_info": "Nákup dne 27.2.2023, částka 100.00 CZK",
             "additional_transaction_info": "Nákup dne 27.2.2023, částka 100.00 CZK",
             "related_account_id": null,
-            "related_account_bank_id": null
+            "related_account_bank_id": null,
+            "bank_transaction_code": {
+                "domain_code": null,
+                "family_code": null,
+                "sub_family_code": null,
+                "proprietary_code": "XXX",
+                "proprietary_issuer": "Czech Banking Association"
+            }
         },
         {
             "ref": {
@@ -133,6 +140,13 @@ okane ./tests/data/test2.xml
             "related_account_bank_id": {
                 "bic": null,
                 "id": "XXX-OTHER-BANK"
+            },
+            "bank_transaction_code": {
+                "domain_code": null,
+                "family_code": null,
+                "sub_family_code": null,
+                "proprietary_code": "XXX",
+                "proprietary_issuer": "Czech Banking Association"
             }
         },
         {
@@ -159,6 +173,13 @@ okane ./tests/data/test2.xml
             "related_account_bank_id": {
                 "bic": null,
                 "id": "XXX-OTHER-BANK"
+            },
+            "bank_transaction_code": {
+                "domain_code": null,
+                "family_code": null,
+                "sub_family_code": null,
+                "proprietary_code": "XXX",
+                "proprietary_issuer": "Czech Banking Association"
             }
         },
         {
@@ -185,6 +206,13 @@ okane ./tests/data/test2.xml
             "related_account_bank_id": {
                 "bic": null,
                 "id": "XXX-OTHER-BANK"
+            },
+            "bank_transaction_code": {
+                "domain_code": null,
+                "family_code": null,
+                "sub_family_code": null,
+                "proprietary_code": "XXX",
+                "proprietary_issuer": "Czech Banking Association"
             }
         },
         {
@@ -205,7 +233,14 @@ okane ./tests/data/test2.xml
             "remote_info": "transaction description",
             "additional_transaction_info": null,
             "related_account_id": null,
-            "related_account_bank_id": null
+            "related_account_bank_id": null,
+            "bank_transaction_code": {
+                "domain_code": null,
+                "family_code": null,
+                "sub_family_code": null,
+                "proprietary_code": "XXX",
+                "proprietary_issuer": "Czech Banking Association"
+            }
         },
         {
             "ref": {
@@ -231,6 +266,13 @@ okane ./tests/data/test2.xml
             "related_account_bank_id": {
                 "bic": "REVOLT21",
                 "id": null
+            },
+            "bank_transaction_code": {
+                "domain_code": null,
+                "family_code": null,
+                "sub_family_code": null,
+                "proprietary_code": "XXX",
+                "proprietary_issuer": "Czech Banking Association"
             }
         }
     ]
@@ -246,6 +288,13 @@ MIT – see [LICENSE.txt](./LICENSE.txt).
 [2]: https://cbaonline.cz/formaty-xml-pro-vzajemnou-komunikaci-bank-s-klienty
 
 ## Changelog
+
+### 0.5.0 (2026-10-01)
+
+- Added a method to read data from memory: `BankToCustomerStatement.from_bytes()`
+- The library can now serialize back into camt.053 XML using `BankToCustomerStatement.to_bytes()` or `BankToCustomerStatement.to_file()` 
+- To make sure that the camt.053 output is valid, we now parse `<BkTxCd>` into `BankTransactionCode`
+- Code passes Pyrefly check as well as MyPy
 
 ### 0.4.0 (2026-05-20)
 
