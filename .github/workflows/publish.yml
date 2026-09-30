@@ -1,0 +1,50 @@
+name: Publish
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/main.yml
+    permissions:  # called workflow cannot have more than these
+      contents: read
+      packages: read
+    secrets: inherit
+
+  publish:
+    name: publish to PyPI
+    needs: ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: pypi
+      url: https://pypi.org/project/okane/
+    permissions:
+      contents: read
+      id-token: write  # PyPI trusted publishing
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0  # hatch-vcs derives the version from git tags
+
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.12.6"
+
+      - name: Build
+        run: uv build
+
+      - name: Check version matches tag
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          ls dist/
+          test -f "dist/okane-${version}.tar.gz"
+          test -f "dist/okane-${version}-py3-none-any.whl"
+
+      - name: Publish
+        run: uv publish

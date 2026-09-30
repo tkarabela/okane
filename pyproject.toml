@@ -54,11 +54,11 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.27", "hatch-vcs>=0.5"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-path = "src/okane/__init__.py"
+source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/okane"]
@@ -70,6 +70,10 @@ include = [
     "LICENSE.txt",
     "tests",
 ]
+
+[tool.uv]
+# Rebuild the editable install when the commit or tags change, so the version stays current
+cache-keys = [{ file = "pyproject.toml" }, { git = { commit = true, tags = true } }]
 
 [tool.coverage.run]
 branch = true

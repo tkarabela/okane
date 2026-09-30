@@ -8,7 +8,9 @@ used by the Czech Banking Association (ČBA).
 
 """
 
+from importlib.metadata import version
+
 from .models import BankId, Balance, AccountId, BankToCustomerStatement, BankTransactionCode, Transaction, TransactionRef
 from .cli import main
 
-__version__ = "0.4.0"
+__version__ = version("okane")

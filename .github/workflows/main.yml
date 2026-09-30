@@ -13,6 +13,9 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+  # Allows the publish workflow to run tests before publishing
+  workflow_call:
+
 jobs:
   run-tests:
 
