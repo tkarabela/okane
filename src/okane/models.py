@@ -152,10 +152,12 @@ class BankToCustomerStatement(BaseModel):
 
     @classmethod
     def from_file(cls, path: os.PathLike[str] | str) -> "BankToCustomerStatement":
+        """Parse camt.053 XML file with BkToCstmrStmt"""
         return cls.from_bytes(Path(path).read_bytes())
 
     @classmethod
     def from_bytes(cls, raw_xml: bytes) -> "BankToCustomerStatement":
+        """Parse camt.053 XML text with BkToCstmrStmt"""
         raw_xml_no_namespace = raw_xml.replace(b'xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02"', b"")
         tree = etree.parse(BytesIO(raw_xml_no_namespace))
         root = tree.getroot()
@@ -249,3 +251,13 @@ class BankToCustomerStatement(BaseModel):
                 .alias("amount")
             )
         )
+
+    def to_bytes(self) -> bytes:
+        """Serialize into camt.053 XML text with BkToCstmrStmt"""
+        from okane.serializer import serialize_statement
+        root = serialize_statement(self)
+        return etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True, pretty_print=True)
+
+    def to_file(self, path: os.PathLike[str] | str) -> None:
+        """Serialize into camt.053 XML file with BkToCstmrStmt"""
+        Path(path).write_bytes(self.to_bytes())
