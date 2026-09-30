@@ -18,7 +18,7 @@ class OutputFormat(StrEnum):
     CSV = "csv"
 
 
-def main(argv: list[str]) -> int:
+def main(argv: list[str] | None = None) -> int:
     from okane import __version__
 
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)

@@ -44,6 +44,9 @@ jobs:
     - name: Typecheck with mypy
       run: |
         uv run mypy src/okane
+    - name: Typecheck with pyrefly
+      run: |
+        uv run pyrefly check
     - name: Check with ruff
       run: |
         uv run ruff check src/okane

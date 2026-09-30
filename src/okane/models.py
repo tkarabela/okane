@@ -4,11 +4,14 @@ from lxml import etree
 from lxml.etree import _Element
 from pathlib import Path
 from pydantic import BaseModel
-from typing import Self
+from typing import Self, override, TYPE_CHECKING
 import datetime
 import os
 
 from okane.helpers import get_text_or_none, flatten_dict
+
+if TYPE_CHECKING:
+    import polars
 
 try:
     import polars as pl
@@ -27,6 +30,7 @@ class BankId(BaseModel):
     bic: str | None = None
     id: str | None = None
 
+    @override
     def __str__(self) -> str:
         return self.bic or self.id or ""
 
@@ -55,6 +59,7 @@ class AccountId(BaseModel):
     iban: str | None = None
     id: str | None = None
 
+    @override
     def __str__(self) -> str:
         return self.iban or self.id or ""
 
@@ -82,6 +87,7 @@ class TransactionRef(BaseModel):
     cheque_number: str | None = None
     clearing_system_ref: str | None = None
 
+    @override
     def __str__(self) -> str:
         return ", ".join(f"{k}={v}" for k, v in self.model_dump().items() if v is not None)
 
@@ -202,7 +208,7 @@ class BankToCustomerStatement(BaseModel):
         from okane.parser import parse_statement
         return parse_statement(root)
 
-    def get_transaction_dataframe(self) -> "pl.DataFrame":
+    def get_transaction_dataframe(self) -> "polars.DataFrame":
         """
         Return dataframe with transactions
 
@@ -240,7 +246,7 @@ class BankToCustomerStatement(BaseModel):
 
         return pl.DataFrame(rows, schema=schema)  # type: ignore[arg-type]
 
-    def get_balance_dataframe(self) -> "pl.DataFrame":
+    def get_balance_dataframe(self) -> "polars.DataFrame":
         """
         Return dataframe with daily balance (balance at the end of each day)
 

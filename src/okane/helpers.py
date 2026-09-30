@@ -35,8 +35,7 @@ def get_element(root: _Element, path: str) -> _Element:
 
 
 def get_attribute(e: _Element, attr: str) -> str:
-    value = e.attrib[attr]
-    return str(value)
+    return e.attrib[attr]
 
 
 def parse_date_isoformat(s: str) -> datetime.date:

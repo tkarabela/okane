@@ -16,7 +16,7 @@ def _sub(parent: _Element, tag: str, text: str | None = None, **attrib: str) -> 
 
 
 def serialize_statement(statement: BankToCustomerStatement) -> _Element:
-    root = etree.Element(f"{{{NS}}}Document", nsmap={None: NS})  # type: ignore[dict-item]
+    root = etree.Element(f"{{{NS}}}Document", nsmap={None: NS})
     bk_to_cstmr_stmt = _sub(root, "BkToCstmrStmt")
 
     grp_hdr = _sub(bk_to_cstmr_stmt, "GrpHdr")
