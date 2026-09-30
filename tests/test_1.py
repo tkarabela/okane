@@ -76,3 +76,8 @@ def test_1_balance_df(shared_datadir):
         Decimal('2000.00'), Decimal('2000.00'), Decimal('2000.00'), Decimal('2000.00'),
         Decimal('2000.00'), Decimal('2000.00'), Decimal('2000.00')
     ]
+
+def test_reading_methods(shared_datadir):
+    path = shared_datadir.joinpath("test1.xml")
+    ref = okane.BankToCustomerStatement.from_file(path)
+    assert okane.BankToCustomerStatement.from_bytes(path.read_bytes()) == ref

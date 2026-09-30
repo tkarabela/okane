@@ -152,7 +152,10 @@ class BankToCustomerStatement(BaseModel):
 
     @classmethod
     def from_file(cls, path: os.PathLike[str] | str) -> "BankToCustomerStatement":
-        raw_xml = Path(path).read_bytes()
+        return cls.from_bytes(Path(path).read_bytes())
+
+    @classmethod
+    def from_bytes(cls, raw_xml: bytes) -> "BankToCustomerStatement":
         raw_xml_no_namespace = raw_xml.replace(b'xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.02"', b"")
         tree = etree.parse(BytesIO(raw_xml_no_namespace))
         root = tree.getroot()

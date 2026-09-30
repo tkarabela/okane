@@ -71,3 +71,9 @@ def test_2(shared_datadir):
     assert t6.info == ""
     assert t6.related_account_id == okane.AccountId(iban='LT6632xxxxxx')
     assert t6.related_account_bank_id == okane.BankId(bic='REVOLT21')
+
+
+def test_reading_methods(shared_datadir):
+    path = shared_datadir.joinpath("test2.xml")
+    ref = okane.BankToCustomerStatement.from_file(path)
+    assert okane.BankToCustomerStatement.from_bytes(path.read_bytes()) == ref
