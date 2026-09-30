@@ -29,6 +29,7 @@ def test_2(shared_datadir):
     assert t1.entry_ref == "XXX-REF-1"
     assert t1.val_date == datetime.date(2023, 3, 1)
     assert t1.info == 'Nákup dne 27.2.2023, částka 100.00 CZK'
+    assert t1.bank_transaction_code == okane.BankTransactionCode(proprietary_code="XXX", proprietary_issuer="Czech Banking Association")
 
     t2 = statement.transactions[1]
     assert t2.amount == -200

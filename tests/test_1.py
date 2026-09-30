@@ -38,6 +38,7 @@ def test_1(shared_datadir):
     assert str(t1.ref) == 'account_servicer_ref=XXX'
     assert t1.val_date == datetime.date(2023, 3, 12)
     assert t1.info == 'Incoming payment'
+    assert t1.bank_transaction_code == okane.BankTransactionCode(proprietary_code="XXX", proprietary_issuer="CBA")
 
     t2 = statement.transactions[1]
     assert t2.amount == -500

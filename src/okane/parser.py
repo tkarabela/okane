@@ -4,7 +4,7 @@ from lxml.etree import _Element
 import datetime
 
 from okane.helpers import get_element, get_text, parse_date_isoformat, get_attribute, get_text_or_none
-from okane.models import BankToCustomerStatement, AccountId, Balance, Transaction, TransactionRef, BankId
+from okane.models import BankToCustomerStatement, AccountId, Balance, Transaction, TransactionRef, BankId, BankTransactionCode
 
 
 class CreditOrDebit(StrEnum):
@@ -82,6 +82,7 @@ def parse_transaction(ntry: _Element) -> Transaction:
         amount *= -1
 
     val_date = parse_date_isoformat(get_text(ntry, "ValDt/Dt"))
+    bank_transaction_code = BankTransactionCode.from_xml(ntry.find("BkTxCd"))
 
     remote_info = get_text_or_none(ntry, "NtryDtls/TxDtls/RmtInf/Ustrd")
     additional_transaction_info = get_text_or_none(ntry, "NtryDtls/TxDtls/AddtlTxInf")
@@ -110,4 +111,5 @@ def parse_transaction(ntry: _Element) -> Transaction:
         additional_transaction_info=additional_transaction_info,
         related_account_id=related_account_id,
         related_account_bank_id=related_account_bank_id,
+        bank_transaction_code=bank_transaction_code,
     )

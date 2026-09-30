@@ -102,6 +102,42 @@ class TransactionRef(BaseModel):
             )
 
 
+class BankTransactionCode(BaseModel):
+    """
+    BankTransactionCodeStructure4 per camt.053
+
+    Attributes:
+        domain_code: ISO bank transaction domain code (eg. "PMNT")
+        family_code: ISO bank transaction family code (eg. "RCDT")
+        sub_family_code: ISO bank transaction sub-family code (eg. "ESCT")
+        proprietary_code: Proprietary bank transaction code (eg. ČBA code)
+        proprietary_issuer: Issuer of the proprietary code
+    """
+    domain_code: str | None = None
+    family_code: str | None = None
+    sub_family_code: str | None = None
+    proprietary_code: str | None = None
+    proprietary_issuer: str | None = None
+
+    @classmethod
+    def from_xml(cls, root: _Element | None) -> Self | None:
+        if root is None:
+            return None
+
+        code = cls(
+            domain_code=get_text_or_none(root, "Domn/Cd"),
+            family_code=get_text_or_none(root, "Domn/Fmly/Cd"),
+            sub_family_code=get_text_or_none(root, "Domn/Fmly/SubFmlyCd"),
+            proprietary_code=get_text_or_none(root, "Prtry/Cd"),
+            proprietary_issuer=get_text_or_none(root, "Prtry/Issr"),
+        )
+
+        if any(v is not None for v in code.model_dump().values()):
+            return code
+        else:
+            return None
+
+
 class Balance(BaseModel):
     amount: Decimal
     currency: str
@@ -118,6 +154,7 @@ class Transaction(BaseModel):
     additional_transaction_info: str | None
     related_account_id: AccountId | None
     related_account_bank_id: BankId | None
+    bank_transaction_code: BankTransactionCode | None = None
 
     @property
     def info(self) -> str:
@@ -194,6 +231,11 @@ class BankToCustomerStatement(BaseModel):
             "related_account_id.id": pl.String,
             "related_account_bank_id.bic": pl.String,
             "related_account_bank_id.id": pl.String,
+            "bank_transaction_code.domain_code": pl.String,
+            "bank_transaction_code.family_code": pl.String,
+            "bank_transaction_code.sub_family_code": pl.String,
+            "bank_transaction_code.proprietary_code": pl.String,
+            "bank_transaction_code.proprietary_issuer": pl.String,
         }
 
         return pl.DataFrame(rows, schema=schema)  # type: ignore[arg-type]

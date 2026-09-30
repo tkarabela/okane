@@ -35,9 +35,9 @@ def test_to_file_matches_to_bytes(shared_datadir, tmp_path):
     assert output_path.read_bytes() == ref.to_bytes()
 
 
-def test_negative_balance():
+def make_statement(transactions=()):
     tz = datetime.timezone(datetime.timedelta(hours=1))
-    ref = okane.BankToCustomerStatement(
+    return okane.BankToCustomerStatement(
         statement_id="XXX-STATEMENT-ID",
         created_time=datetime.datetime(2023, 4, 1, 12, 0, tzinfo=tz),
         from_time=datetime.datetime(2023, 3, 1, 0, 0, tzinfo=tz),
@@ -45,9 +45,47 @@ def test_negative_balance():
         account_id=okane.AccountId(id="XXX-ACC"),
         opening_balance=okane.Balance(amount=Decimal("-123.45"), currency="CZK", date=datetime.date(2023, 3, 1)),
         closing_balance=okane.Balance(amount=Decimal("-123.45"), currency="CZK", date=datetime.date(2023, 3, 31)),
-        transactions=[],
+        transactions=list(transactions),
     )
+
+
+def make_transaction(bank_transaction_code):
+    return okane.Transaction(
+        ref=okane.TransactionRef(),
+        entry_ref="XXX-REF-1",
+        amount=Decimal("100.00"),
+        currency="CZK",
+        val_date=datetime.date(2023, 3, 1),
+        remote_info=None,
+        additional_transaction_info=None,
+        related_account_id=None,
+        related_account_bank_id=None,
+        bank_transaction_code=bank_transaction_code,
+    )
+
+
+def test_negative_balance():
+    ref = make_statement()
 
     raw_xml = ref.to_bytes()
     assert b"<CdtDbtInd>DBIT</CdtDbtInd>" in raw_xml
     assert okane.BankToCustomerStatement.from_bytes(raw_xml) == ref
+
+
+@pytest.mark.parametrize("bank_transaction_code", [
+    None,
+    okane.BankTransactionCode(proprietary_code="10000405000", proprietary_issuer="CBA"),
+    okane.BankTransactionCode(domain_code="PMNT", family_code="RCDT", sub_family_code="ESCT"),
+    okane.BankTransactionCode(domain_code="PMNT", family_code="RCDT", sub_family_code="ESCT",
+                              proprietary_code="10000405000", proprietary_issuer="CBA"),
+])
+def test_roundtrip_bank_transaction_code(bank_transaction_code):
+    ref = make_statement([make_transaction(bank_transaction_code)])
+
+    raw_xml = ref.to_bytes()
+    statement = okane.BankToCustomerStatement.from_bytes(raw_xml)
+
+    assert statement == ref
+    assert statement.transactions[0].bank_transaction_code == bank_transaction_code
+    if bank_transaction_code is None:
+        assert b"<BkTxCd/>" in raw_xml  # BkTxCd is mandatory

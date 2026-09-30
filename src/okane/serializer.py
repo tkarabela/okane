@@ -2,7 +2,7 @@ from decimal import Decimal
 from lxml import etree
 from lxml.etree import _Element
 
-from okane.models import BankToCustomerStatement, AccountId, Balance, Transaction, TransactionRef, BankId
+from okane.models import BankToCustomerStatement, AccountId, Balance, Transaction, TransactionRef, BankId, BankTransactionCode
 from okane.parser import CreditOrDebit
 
 NS = "urn:iso:std:iso:20022:tech:xsd:camt.053.001.02"
@@ -72,6 +72,30 @@ def serialize_bank_id(fin_instn_id: _Element, bank_id: BankId) -> None:
         _sub(othr, "Id", bank_id.id)
 
 
+def serialize_bank_transaction_code(bk_tx_cd: _Element, code: BankTransactionCode | None) -> None:
+    # BkTxCd is mandatory in Ntry, so it's written out empty if we don't have the code
+    if code is None:
+        return
+
+    if code.domain_code is not None or code.family_code is not None or code.sub_family_code is not None:
+        domn = _sub(bk_tx_cd, "Domn")
+        if code.domain_code is not None:
+            _sub(domn, "Cd", code.domain_code)
+        if code.family_code is not None or code.sub_family_code is not None:
+            fmly = _sub(domn, "Fmly")
+            if code.family_code is not None:
+                _sub(fmly, "Cd", code.family_code)
+            if code.sub_family_code is not None:
+                _sub(fmly, "SubFmlyCd", code.sub_family_code)
+
+    if code.proprietary_code is not None or code.proprietary_issuer is not None:
+        prtry = _sub(bk_tx_cd, "Prtry")
+        if code.proprietary_code is not None:
+            _sub(prtry, "Cd", code.proprietary_code)
+        if code.proprietary_issuer is not None:
+            _sub(prtry, "Issr", code.proprietary_issuer)
+
+
 def serialize_transaction_ref(tx_dtls: _Element, ref: TransactionRef) -> None:
     fields = [
         ("MsgId", ref.message_id),
@@ -98,6 +122,7 @@ def serialize_transaction(ntry: _Element, tx: Transaction) -> None:
     _sub(ntry, "Sts", "BOOK")
     val_dt = _sub(ntry, "ValDt")
     _sub(val_dt, "Dt", tx.val_date.isoformat())
+    serialize_bank_transaction_code(_sub(ntry, "BkTxCd"), tx.bank_transaction_code)
 
     ntry_dtls = _sub(ntry, "NtryDtls")
     tx_dtls = _sub(ntry_dtls, "TxDtls")
